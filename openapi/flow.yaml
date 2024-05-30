@@ -1,0 +1,183 @@
+openapi: 3.0.1
+info:
+  title: local-dev
+  description: ''
+  version: 1.0.0
+tags: []
+paths:
+  /flow:
+    get:
+      summary: 获取 flow 列表
+      deprecated: false
+      description: ''
+      tags: []
+      parameters: []
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: array
+              items:
+                properties:
+                  title:
+                    type: string
+                  created_at:
+                    type: string
+                  id:
+                    type: integer
+                type: object
+                required:
+                  - title
+                  - created_at
+                  - id
+      responses:
+        '200':
+          description: 成功
+          content:
+            application/json:
+              schema:
+                type: object
+                properties: {}
+      security:
+        - bearer: []
+    post:
+      summary: 创建 flow
+      deprecated: false
+      description: ''
+      tags: []
+      parameters: []
+      requestBody:
+        content:
+          application/json:
+            schema:
+              properties:
+                nodes:
+                  type: string
+                edges:
+                  type: string
+                title:
+                  type: string
+              required:
+                - nodes
+                - edges
+                - title
+              type: object
+      responses:
+        '200':
+          description: 成功
+          content:
+            application/json:
+              schema:
+                type: object
+                properties: {}
+      security:
+        - bearer: []
+    put:
+      summary: 更新 flow
+      deprecated: false
+      description: ''
+      tags: []
+      parameters: []
+      requestBody:
+        content:
+          application/json:
+            schema:
+              properties:
+                nodes:
+                  type: string
+                edges:
+                  type: string
+                title:
+                  type: string
+                id:
+                  type: string
+              required:
+                - nodes
+                - edges
+                - title
+                - id
+              type: object
+      responses:
+        '200':
+          description: 成功
+          content:
+            application/json:
+              schema:
+                type: object
+                properties: {}
+      security:
+        - bearer: []
+  /flow/{id}:
+    delete:
+      summary: 删除 flow
+      deprecated: false
+      description: ''
+      tags: []
+      parameters:
+        - name: id
+          in: path
+          description: ''
+          required: true
+          schema:
+            type: string
+      responses:
+        '204':
+          description: 删除成功
+          content:
+            application/json:
+              schema:
+                type: object
+                properties: {}
+      security:
+        - bearer: []
+    get:
+      summary: 获取 flow
+      deprecated: false
+      description: ''
+      tags: []
+      parameters:
+        - name: id
+          in: path
+          description: ''
+          required: true
+          schema:
+            type: string
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                id:
+                  type: integer
+                title:
+                  type: string
+                nodes:
+                  type: string
+                edges:
+                  type: string
+                created_at:
+                  type: string
+              required:
+                - nodes
+                - edges
+                - title
+                - created_at
+                - id
+      responses:
+        '200':
+          description: 成功
+          content:
+            application/json:
+              schema:
+                type: object
+                properties: {}
+      security:
+        - bearer: []
+components:
+  schemas: {}
+  securitySchemes:
+    bearer:
+      type: http
+      scheme: bearer
+servers: []
