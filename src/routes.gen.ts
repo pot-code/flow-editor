@@ -12,12 +12,18 @@
 
 import { Route as rootRoute } from './pages/__root'
 import { Route as LoginImport } from './pages/login'
+import { Route as CallbackImport } from './pages/callback'
 import { Route as IndexImport } from './pages/index'
 
 // Create/Update Routes
 
 const LoginRoute = LoginImport.update({
   path: '/login',
+  getParentRoute: () => rootRoute,
+} as any)
+
+const CallbackRoute = CallbackImport.update({
+  path: '/callback',
   getParentRoute: () => rootRoute,
 } as any)
 
@@ -37,6 +43,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof IndexImport
       parentRoute: typeof rootRoute
     }
+    '/callback': {
+      id: '/callback'
+      path: '/callback'
+      fullPath: '/callback'
+      preLoaderRoute: typeof CallbackImport
+      parentRoute: typeof rootRoute
+    }
     '/login': {
       id: '/login'
       path: '/login'
@@ -49,7 +62,11 @@ declare module '@tanstack/react-router' {
 
 // Create and export the route tree
 
-export const routeTree = rootRoute.addChildren({ IndexRoute, LoginRoute })
+export const routeTree = rootRoute.addChildren({
+  IndexRoute,
+  CallbackRoute,
+  LoginRoute,
+})
 
 /* prettier-ignore-end */
 
@@ -60,11 +77,15 @@ export const routeTree = rootRoute.addChildren({ IndexRoute, LoginRoute })
       "filePath": "__root.tsx",
       "children": [
         "/",
+        "/callback",
         "/login"
       ]
     },
     "/": {
       "filePath": "index.tsx"
+    },
+    "/callback": {
+      "filePath": "callback.tsx"
     },
     "/login": {
       "filePath": "login.tsx"
