@@ -1,7 +1,5 @@
-import { isNil } from "lodash-es"
+import axios from "axios"
 import React from "react"
-import useAuthStore from "./features/auth/useAuthStore"
-import zitadel from "./lib/auth/zitadel"
 
 async function installMockService() {
   if (import.meta.env.VITE_MOCK_ENABLED === "true") {
@@ -27,18 +25,11 @@ async function installWdyr() {
 }
 
 async function configOpenApi() {
-  // OpenAPI.BASE = import.meta.env.VITE_API_PREFIX
-}
-
-async function initAuth() {
-  const user = await zitadel.userManager.getUser()
-  console.log("🚀 ~ initAuth ~ user:", user)
-  useAuthStore.getState().setIsAuthenticated(!isNil(user))
+  axios.defaults.baseURL = import.meta.env.VITE_API_BASE_URL
 }
 
 export default async function setup() {
   await installWdyr()
   await installMockService()
   await configOpenApi()
-  await initAuth()
 }
