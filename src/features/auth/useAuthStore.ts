@@ -4,13 +4,13 @@ import { create } from "zustand"
 type State = {
   isAuthenticated: boolean
   user: User | null
-  setIsAuthenticated: (isAuthenticated: boolean) => void
-  setUser: (user: User | null) => void
 }
 
-export default create<State>((set) => ({
+const useAuthStore = create<State>(() => ({
   isAuthenticated: false,
   user: null,
-  setUser: (user) => set({ user }),
-  setIsAuthenticated: (isAuthenticated) => set({ isAuthenticated }),
 }))
+
+export const setIsAuthenticated = (isAuthenticated: boolean) => useAuthStore.setState(() => ({ isAuthenticated }))
+export const setUser = (user: User | null) => useAuthStore.setState({ user })
+export default useAuthStore

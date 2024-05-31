@@ -1,11 +1,14 @@
-import Auth from "@/features/auth/Auth"
-import { Link, createFileRoute } from "@tanstack/react-router"
+import useAuthStore from "@/features/auth/useAuthStore"
+import { Link, createFileRoute, redirect } from "@tanstack/react-router"
 
 export const Route = createFileRoute("/")({
+  beforeLoad: () => {
+    if (!useAuthStore.getState().isAuthenticated) throw redirect({ to: "/login" })
+  },
   component: () => (
-    <Auth>
-      <div>Welcome home!</div>
+    <div>
+      <h1>Welcome home!</h1>
       <Link to={"/about"}>About</Link>
-    </Auth>
+    </div>
   ),
 })

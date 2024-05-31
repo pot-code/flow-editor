@@ -1,30 +1,20 @@
-import { QueryClient, QueryClientProvider } from "@tanstack/react-query"
-import { RouterProvider, createRouter } from "@tanstack/react-router"
+import { QueryClientProvider } from "@tanstack/react-query"
 import React from "react"
 import { createRoot } from "react-dom/client"
 
-import { routeTree } from "./routes.gen"
+import { queryClient } from "./lib/query"
 import setup from "./setup"
 
+import App from "./app"
 import "./styles/main.scss"
 
-const queryClient = new QueryClient({
-  defaultOptions: {
-    queries: {
-      refetchOnWindowFocus: false,
-      retry: 3,
-    },
-  },
-})
-
-const router = createRouter({ routeTree })
 const root = createRoot(document.getElementById("root") as Element)
 
 setup().then(() =>
   root.render(
     <QueryClientProvider client={queryClient}>
       <React.StrictMode>
-        <RouterProvider router={router} />
+        <App />
       </React.StrictMode>
     </QueryClientProvider>,
   ),

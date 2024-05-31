@@ -1,4 +1,4 @@
-import useAuthStore from "@/features/auth/useAuthStore"
+import { setIsAuthenticated, setUser } from "@/features/auth/useAuthStore"
 import zitadel from "@/features/auth/zitadel"
 import { createFileRoute, useNavigate } from "@tanstack/react-router"
 
@@ -8,13 +8,12 @@ export const Route = createFileRoute("/callback")({
 
 function Callback() {
   const navigate = useNavigate()
-  const { setIsAuthenticated, setUser } = useAuthStore()
 
   useEffect(() => {
-    zitadel.userManager.signinRedirectCallback().then((user) => {
+    zitadel.userManager.signinRedirectCallback().then(async (user) => {
       setIsAuthenticated(true)
       setUser(user)
-      navigate({ to: "/" })
+      navigate({ to: "/", replace: true })
     })
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])

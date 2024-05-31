@@ -18,7 +18,6 @@ async function installWdyr() {
     const { default: wdyr } = await import("@welldone-software/why-did-you-render")
     wdyr(React, {
       exclude: [/^BrowserRouter/, /^Link/, /^Route/],
-      trackHooks: true,
       trackAllPureComponents: true,
     })
   }
