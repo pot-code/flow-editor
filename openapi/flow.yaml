@@ -12,32 +12,15 @@ paths:
       description: ''
       tags: []
       parameters: []
-      requestBody:
-        content:
-          application/json:
-            schema:
-              type: array
-              items:
-                properties:
-                  title:
-                    type: string
-                  created_at:
-                    type: string
-                  id:
-                    type: integer
-                type: object
-                required:
-                  - title
-                  - created_at
-                  - id
       responses:
         '200':
           description: 成功
           content:
             application/json:
               schema:
-                type: object
-                properties: {}
+                type: array
+                items:
+                  $ref: '#/components/schemas/FlowListObject'
       security:
         - bearer: []
     post:
@@ -51,15 +34,15 @@ paths:
           application/json:
             schema:
               properties:
-                nodes:
-                  type: string
-                edges:
-                  type: string
                 title:
                   type: string
+                nodes:
+                  type: string
+                  nullable: true
+                edges:
+                  type: string
+                  nullable: true
               required:
-                - nodes
-                - edges
                 - title
               type: object
       responses:
@@ -72,12 +55,19 @@ paths:
                 properties: {}
       security:
         - bearer: []
+  /flow/{id}:
     put:
       summary: 更新 flow
       deprecated: false
       description: ''
       tags: []
-      parameters: []
+      parameters:
+        - name: id
+          in: path
+          description: ''
+          required: true
+          schema:
+            type: integer
       requestBody:
         content:
           application/json:
@@ -85,15 +75,15 @@ paths:
               properties:
                 nodes:
                   type: string
+                  nullable: true
                 edges:
                   type: string
+                  nullable: true
                 title:
                   type: string
                 id:
-                  type: string
+                  type: integer
               required:
-                - nodes
-                - edges
                 - title
                 - id
               type: object
@@ -107,7 +97,6 @@ paths:
                 properties: {}
       security:
         - bearer: []
-  /flow/{id}:
     delete:
       summary: 删除 flow
       deprecated: false
@@ -154,16 +143,16 @@ paths:
                   type: string
                 nodes:
                   type: string
+                  nullable: true
                 edges:
                   type: string
+                  nullable: true
                 created_at:
                   type: string
               required:
-                - nodes
-                - edges
                 - title
-                - created_at
                 - id
+                - created_at
       responses:
         '200':
           description: 成功
@@ -175,7 +164,20 @@ paths:
       security:
         - bearer: []
 components:
-  schemas: {}
+  schemas:
+    FlowListObject:
+      properties:
+        title:
+          type: string
+        created_at:
+          type: string
+        id:
+          type: integer
+      type: object
+      required:
+        - title
+        - created_at
+        - id
   securitySchemes:
     bearer:
       type: http

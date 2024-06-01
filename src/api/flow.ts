@@ -4,112 +4,100 @@
  * local-dev
  * OpenAPI spec version: 1.0.0
  */
-import * as axios from 'axios';
-import type {
-  AxiosRequestConfig,
-  AxiosResponse
-} from 'axios'
-export type GetFlowId200 = { [key: string]: any };
+import * as axios from "axios"
+import type { AxiosRequestConfig, AxiosResponse } from "axios"
+export type GetFlowId200 = { [key: string]: any }
 
 export type GetFlowIdBody = {
-  created_at: string;
-  edges: string;
-  id: number;
-  nodes: string;
-  title: string;
-};
+  created_at: string
+  /** @nullable */
+  edges?: string | null
+  id: number
+  /** @nullable */
+  nodes?: string | null
+  title: string
+}
 
-export type DeleteFlowId204 = { [key: string]: any };
+export type DeleteFlowId204 = { [key: string]: any }
 
-export type PutFlow200 = { [key: string]: any };
+export type PutFlowId200 = { [key: string]: any }
 
-export type PutFlowBody = {
-  edges: string;
-  id: string;
-  nodes: string;
-  title: string;
-};
+export type PutFlowIdBody = {
+  /** @nullable */
+  edges?: string | null
+  id: number
+  /** @nullable */
+  nodes?: string | null
+  title: string
+}
 
-export type PostFlow200 = { [key: string]: any };
+export type PostFlow200 = { [key: string]: any }
 
 export type PostFlowBody = {
-  edges: string;
-  nodes: string;
-  title: string;
-};
+  /** @nullable */
+  edges?: string | null
+  /** @nullable */
+  nodes?: string | null
+  title: string
+}
 
-export type GetFlow200 = { [key: string]: any };
+export interface FlowListObject {
+  created_at: string
+  id: number
+  title: string
+}
 
-export type GetFlowBodyItem = {
-  created_at: string;
-  id: number;
-  title: string;
-};
-
-
-
-
-
-  /**
+/**
  * @summary 获取 flow 列表
  */
-export const getFlow = <TData = AxiosResponse<GetFlow200>>(
-    getFlowBodyItem: GetFlowBodyItem[], options?: AxiosRequestConfig
- ): Promise<TData> => {
-    return axios.default.get(
-      `/flow`,options
-    );
-  }
+export const getFlow = <TData = AxiosResponse<FlowListObject[]>>(options?: AxiosRequestConfig): Promise<TData> => {
+  return axios.default.get(`/flow`, options)
+}
 
 /**
  * @summary 创建 flow
  */
 export const postFlow = <TData = AxiosResponse<PostFlow200>>(
-    postFlowBody: PostFlowBody, options?: AxiosRequestConfig
- ): Promise<TData> => {
-    return axios.default.post(
-      `/flow`,
-      postFlowBody,options
-    );
-  }
+  postFlowBody: PostFlowBody,
+  options?: AxiosRequestConfig,
+): Promise<TData> => {
+  return axios.default.post(`/flow`, postFlowBody, options)
+}
 
 /**
  * @summary 更新 flow
  */
-export const putFlow = <TData = AxiosResponse<PutFlow200>>(
-    putFlowBody: PutFlowBody, options?: AxiosRequestConfig
- ): Promise<TData> => {
-    return axios.default.put(
-      `/flow`,
-      putFlowBody,options
-    );
-  }
+export const putFlowId = <TData = AxiosResponse<PutFlowId200>>(
+  id: number,
+  putFlowIdBody: PutFlowIdBody,
+  options?: AxiosRequestConfig,
+): Promise<TData> => {
+  return axios.default.put(`/flow/${id}`, putFlowIdBody, options)
+}
 
 /**
  * @summary 删除 flow
  */
 export const deleteFlowId = <TData = AxiosResponse<DeleteFlowId204>>(
-    id: string, options?: AxiosRequestConfig
- ): Promise<TData> => {
-    return axios.default.delete(
-      `/flow/${id}`,options
-    );
-  }
+  id: string,
+  options?: AxiosRequestConfig,
+): Promise<TData> => {
+  return axios.default.delete(`/flow/${id}`, options)
+}
 
 /**
  * @summary 获取 flow
  */
 export const getFlowId = <TData = AxiosResponse<GetFlowId200>>(
-    id: string,
-    getFlowIdBody: GetFlowIdBody, options?: AxiosRequestConfig
- ): Promise<TData> => {
-    return axios.default.get(
-      `/flow/${id}`,options
-    );
-  }
+  id: string,
+  getFlowIdBody: GetFlowIdBody,
+  options?: AxiosRequestConfig,
+): Promise<TData> => {
+  return axios.default.get(`/flow/${id}`, options)
+}
 
-export type GetFlowResult = AxiosResponse<GetFlow200>
+export type GetFlowResult = AxiosResponse<FlowListObject[]>
 export type PostFlowResult = AxiosResponse<PostFlow200>
-export type PutFlowResult = AxiosResponse<PutFlow200>
+export type PutFlowIdResult = AxiosResponse<PutFlowId200>
 export type DeleteFlowIdResult = AxiosResponse<DeleteFlowId204>
 export type GetFlowIdResult = AxiosResponse<GetFlowId200>
