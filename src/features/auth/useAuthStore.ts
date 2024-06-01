@@ -5,6 +5,8 @@ import { create } from "zustand"
 type User = {
   name?: string
   avatar?: string
+  membership: number
+  activated: boolean
 }
 
 type State = {
@@ -16,7 +18,10 @@ type State = {
 const useAuthStore = create<State>(() => ({
   isAuthenticated: false,
   accessToken: null,
-  user: {},
+  user: {
+    membership: 0,
+    activated: false,
+  },
 }))
 
 export const setIsAuthenticated = (isAuthenticated: boolean) => useAuthStore.setState(() => ({ isAuthenticated }))

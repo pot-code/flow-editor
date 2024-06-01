@@ -1,0 +1,48 @@
+openapi: 3.0.1
+info:
+  title: local-dev
+  description: ''
+  version: 1.0.0
+tags: []
+paths:
+  /account:
+    get:
+      summary: 获取 account
+      deprecated: false
+      description: ''
+      tags: []
+      parameters: []
+      responses:
+        '200':
+          description: 成功
+          content:
+            application/json:
+              schema:
+                properties:
+                  membership:
+                    type: integer
+                  activated:
+                    type: boolean
+                required:
+                  - membership
+                  - activated
+                $ref: '#/components/schemas/AccountObject'
+      security:
+        - bearer: []
+components:
+  schemas:
+    AccountObject:
+      type: object
+      properties:
+        membership:
+          type: integer
+        activated:
+          type: boolean
+      required:
+        - membership
+        - activated
+  securitySchemes:
+    bearer:
+      type: http
+      scheme: bearer
+servers: []

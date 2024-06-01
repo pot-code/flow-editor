@@ -1,4 +1,5 @@
-import { setIsAuthenticated, setAccessToken, setUser } from "@/features/auth/useAuthStore"
+import { getAccount } from "@/api/account"
+import { setAccessToken, setIsAuthenticated, setUser } from "@/features/auth/useAuthStore"
 import zitadel from "@/features/auth/zitadel"
 import { createFileRoute, useNavigate } from "@tanstack/react-router"
 
@@ -13,9 +14,11 @@ function Callback() {
     zitadel.userManager.signinRedirectCallback().then(async (user) => {
       setIsAuthenticated(true)
       setAccessToken(user.access_token)
+      const { data } = await getAccount()
       setUser({
         name: user.profile.name,
         avatar: user.profile.picture,
+        ...data,
       })
       navigate({ to: "/", replace: true })
     })
