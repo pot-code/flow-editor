@@ -8,6 +8,7 @@ import setup from "./setup"
 
 import "reactflow/dist/style.css"
 import "./styles/main.scss"
+import { Toaster } from "./components/ui/toaster"
 
 const root = createRoot(document.getElementById("root") as Element)
 
@@ -16,6 +17,7 @@ setup().then(() =>
     <QueryClientProvider client={queryClient}>
       <React.StrictMode>
         <App />
+        <Toaster />
       </React.StrictMode>
     </QueryClientProvider>,
   ),
