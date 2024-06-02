@@ -2,11 +2,11 @@ import { defineConfig } from "orval"
 
 export default defineConfig({
   flow: {
-    input: "./openapi/flow.yaml",
+    input: "./openapi/flow.json",
     output: "./src/api/flow.ts",
   },
   account: {
-    input: "./openapi/account.yaml",
+    input: "./openapi/account.json",
     output: "./src/api/account.ts",
   },
 })

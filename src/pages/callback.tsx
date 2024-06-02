@@ -1,6 +1,6 @@
 import { getAccount } from "@/api/account"
 import { setAccessToken, setIsAuthenticated, setUser } from "@/features/auth/useAuthStore"
-import zitadel from "@/features/auth/zitadel"
+import zitadel from "@/lib/auth/zitadel"
 import { createFileRoute, useNavigate } from "@tanstack/react-router"
 
 export const Route = createFileRoute("/callback")({

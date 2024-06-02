@@ -24,6 +24,7 @@ module.exports = {
     "import/prefer-default-export": "off",
     "@typescript-eslint/no-unused-vars": "warn",
     "@typescript-eslint/naming-convention": "off",
+    "@typescript-eslint/no-explicit-any": "off",
     "react-refresh/only-export-components": ["warn", { allowConstantExport: true }],
   },
 }

@@ -1,7 +1,7 @@
 import { isNil } from "lodash-es"
 import { setAccessToken, setIsAuthenticated, setUser } from "./useAuthStore"
-import zitadel from "./zitadel"
 import { getAccount } from "@/api/account"
+import zitadel from "@/lib/auth/zitadel"
 
 export function useAuth() {
   const [isLoading, setIsLoading] = useState(true)
