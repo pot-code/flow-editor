@@ -95,8 +95,8 @@ export default function useGraph() {
     [onAddEdge],
   )
 
-  function onAddNode(key: React.Key) {
-    appendNode(key.toString())
+  function onAddNode(nodeType: string) {
+    appendNode(nodeType)
   }
 
   return { graphRef, nodes, edges, setEdges, setNodes, onNodesChange, onEdgesChange, onConnect, onAddNode, onAddEdge }

@@ -1,10 +1,10 @@
 import { Handle, NodeProps, Position } from "reactflow"
 import { isNil } from "lodash-es"
-import { Card, CardHeader, CardBody } from "@nextui-org/card"
-import { Chip } from "@nextui-org/chip"
-import { Divider } from "@nextui-org/divider"
 import useNode from "../use-node"
 import { useDataFlowContext } from "../editor/context"
+import { Separator } from "@/components/ui/separator"
+import { Card, CardContent, CardHeader } from "@/components/ui/card"
+import { Badge } from "@/components/ui/badge"
 
 const Multiply = memo<NodeProps>(({ id, isConnectable, data }) => {
   const { getDataSource } = useDataFlowContext()
@@ -28,15 +28,11 @@ const Multiply = memo<NodeProps>(({ id, isConnectable, data }) => {
     <>
       <Card>
         <CardHeader>Multiple</CardHeader>
-        <Divider />
-        <CardBody className="gap-2">
-          <Chip color={isConnected("target", "op1") ? "success" : "default"} variant="flat">
-            Input: {data.op1 ?? "NaN"}
-          </Chip>
-          <Chip color={isConnected("target", "op2") ? "success" : "default"} variant="flat">
-            Input: {data.op2 ?? "NaN"}
-          </Chip>
-        </CardBody>
+        <Separator />
+        <CardContent className="flex pt-4 flex-col gap-2">
+          <Badge color={isConnected("target", "op1") ? "success" : "default"}>Input: {data.op1 ?? "NaN"}</Badge>
+          <Badge color={isConnected("target", "op2") ? "success" : "default"}>Input: {data.op2 ?? "NaN"}</Badge>
+        </CardContent>
       </Card>
       <Handle
         id="op1"

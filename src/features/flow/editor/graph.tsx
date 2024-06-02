@@ -1,10 +1,10 @@
 import { Plus } from "@phosphor-icons/react"
 import ReactFlow, { Background, BackgroundVariant, Controls, Edge, MarkerType, Node, Panel } from "reactflow"
-import { Dropdown, DropdownItem, DropdownMenu, DropdownTrigger } from "@nextui-org/dropdown"
-import { Button } from "@nextui-org/button"
-import { Spinner } from "@nextui-org/spinner"
 import { getNodeTypes } from "../nodes"
 import useGraph from "./use-graph"
+import { Button } from "@/components/ui/button"
+import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from "@/components/ui/dropdown-menu"
+import Spinner from "@/components/ui/spinner"
 
 const nodeTypes = getNodeTypes()
 
@@ -64,21 +64,21 @@ const Graph = forwardRef<GraphRef, GraphProps>(({ isRefreshing, initialNodes = [
       }}
     >
       <Panel position="top-left">
-        <div className="flex flex-col gap-2">
-          <Dropdown>
-            <DropdownTrigger>
-              <Button isIconOnly color="primary" variant="shadow">
+        <div className="flex flex-col gap-2 items-center">
+          <DropdownMenu>
+            <DropdownMenuTrigger asChild>
+              <Button size="icon" color="primary">
                 <Plus />
               </Button>
-            </DropdownTrigger>
-            <DropdownMenu variant="flat" onAction={onAddNode}>
-              <DropdownItem key="number">Number</DropdownItem>
-              <DropdownItem key="add">Addition</DropdownItem>
-              <DropdownItem key="multiple">Multiply</DropdownItem>
-              <DropdownItem key="result">Result</DropdownItem>
-            </DropdownMenu>
-          </Dropdown>
-          {isRefreshing && <Spinner size="sm" color="default" />}
+            </DropdownMenuTrigger>
+            <DropdownMenuContent>
+              <DropdownMenuItem onSelect={() => onAddNode("number")}>Number</DropdownMenuItem>
+              <DropdownMenuItem onSelect={() => onAddNode("add")}>Addition</DropdownMenuItem>
+              <DropdownMenuItem onSelect={() => onAddNode("multiply")}>Multiply</DropdownMenuItem>
+              <DropdownMenuItem onSelect={() => onAddNode("result")}>Result</DropdownMenuItem>
+            </DropdownMenuContent>
+          </DropdownMenu>
+          {isRefreshing && <Spinner />}
         </div>
       </Panel>
       <Controls />

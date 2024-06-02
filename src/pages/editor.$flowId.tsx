@@ -1,13 +1,13 @@
 import { getFlowId, putFlowId } from "@/api/flow"
-import LoadingModal from "@/components/loading-modal"
-import { useToast } from "@/components/toast"
+import { Button } from "@/components/ui/button"
+import Loading from "@/components/ui/loading"
+import { useToast } from "@/components/ui/use-toast"
 import { DEFAULT_FLOW_NAME } from "@/features/flow/config"
 import DataFlowProvider from "@/features/flow/editor/context"
 import FlowGraph, { GraphRef } from "@/features/flow/editor/graph"
 import NameInput from "@/features/flow/editor/name-input"
 import { delayedPromise } from "@/utils/promise"
 import time from "@/utils/time"
-import { Button } from "@nextui-org/button"
 import { ArrowLeft } from "@phosphor-icons/react"
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query"
 import { createFileRoute, useNavigate } from "@tanstack/react-router"
@@ -20,7 +20,7 @@ export const Route = createFileRoute("/editor/$flowId")({
 
 function FlowEditor() {
   const queryClient = useQueryClient()
-  const toast = useToast()
+  const { toast } = useToast()
   const navigate = useNavigate()
 
   const [nodes, setNodes] = useState<Node[]>([])
@@ -37,13 +37,14 @@ function FlowEditor() {
   const updateFlow = useMutation({
     mutationFn: delayedPromise(0.5 * time.Second, ({ id, data }) => putFlowId(id, data)),
     onSuccess: () => {
-      toast.success("保存成功")
+      toast({ title: "保存成功" })
       queryClient.invalidateQueries({
         queryKey: ["flow", flowId],
       })
     },
     onError: (err) => {
-      toast.error("保存失败", {
+      toast({
+        title: "保存失败",
         description: err.message,
       })
     },
@@ -79,19 +80,19 @@ function FlowEditor() {
 
   useEffect(() => {
     if (flowQuery.isError) {
-      toast.error("加载失败")
+      toast({ title: "加载失败" })
     }
   }, [flowQuery.isError, toast])
 
   return (
     <div className="h-screen w-screen flex flex-col">
       <nav className="flex justify-between items-center px-12 h-12 border-b-1 bg-background border-divider">
-        <Button isIconOnly size="sm" variant="light" onClick={() => navigate({ to: "/" })}>
+        <Button variant="ghost" size="icon" onClick={() => navigate({ to: "/" })}>
           <ArrowLeft />
         </Button>
         <NameInput value={graphName} onChange={onChangeGraphName} />
         <div>
-          <Button size="sm" color="primary" variant="flat" onClick={onSave}>
+          <Button size="sm" variant="ghost" onClick={onSave}>
             保存
           </Button>
         </div>
@@ -103,8 +104,8 @@ function FlowEditor() {
           </ReactFlowProvider>
         </DataFlowProvider>
       </div>
-      <LoadingModal title="保存中" loading={updateFlow.isPending} />
-      <LoadingModal title="载入中" loading={flowQuery.isLoading} />
+      <Loading title="保存中" loading={updateFlow.isPending} />
+      <Loading title="载入中" loading={flowQuery.isLoading} />
     </div>
   )
 }

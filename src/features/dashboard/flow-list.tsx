@@ -1,14 +1,14 @@
-import { Card, CardFooter, CardHeader } from "@nextui-org/card"
-import { Skeleton } from "@nextui-org/skeleton"
-import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query"
-import { isEmpty } from "lodash-es"
-import LoadingModal from "@/components/loading-modal"
-import { useToast } from "@/components/toast"
-import FlowCard from "./flow-card"
-import { useNavigate } from "@tanstack/react-router"
+import { deleteFlowId, getFlow } from "@/api/flow"
+import { Card, CardHeader } from "@/components/ui/card"
+import { Skeleton } from "@/components/ui/skeleton"
+import { useToast } from "@/components/ui/use-toast"
 import { delayedPromise } from "@/utils/promise"
 import time from "@/utils/time"
-import { deleteFlowId, getFlow } from "@/api/flow"
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query"
+import { useNavigate } from "@tanstack/react-router"
+import { isEmpty } from "lodash-es"
+import FlowCard from "./flow-card"
+import Loading from "@/components/ui/loading"
 
 function GridLayout({ children }: { children: React.ReactNode }) {
   return <div className="grid grid-cols-4 monitor-2k:grid-cols-6 monitor-4k:grid-cols-8 gap-4">{children}</div>
@@ -22,11 +22,9 @@ function LoadingState({ count = 3 }: { count?: number }) {
         .map((_, index) => (
           <Card key={index}>
             <CardHeader>
-              <Skeleton className="h-6 my-1 w-full rounded-lg" />
-            </CardHeader>
-            <CardFooter>
+              <Skeleton className="h-8 my-1 w-full rounded-lg" />
               <Skeleton className="h-5 w-[128px] rounded-lg" />
-            </CardFooter>
+            </CardHeader>
           </Card>
         ))}
     </GridLayout>
@@ -38,7 +36,7 @@ function EmptyData() {
 }
 
 export default function FlowList() {
-  const toast = useToast()
+  const { toast } = useToast()
   const navigate = useNavigate()
   const qc = useQueryClient()
   const { isLoading, isError, data, error } = useQuery({
@@ -48,13 +46,14 @@ export default function FlowList() {
   const deleteFlow = useMutation({
     mutationFn: delayedPromise(0.5 * time.Second, deleteFlowId),
     onSuccess: () => {
-      toast.success("删除成功")
+      toast({ title: "删除成功" })
       qc.invalidateQueries({
         queryKey: ["flow", "list"],
       })
     },
     onError: (err) => {
-      toast.error("删除失败", {
+      toast({
+        title: "删除失败",
         description: err.message,
       })
     },
@@ -72,7 +71,8 @@ export default function FlowList() {
 
   useEffect(() => {
     if (isError) {
-      toast.error("获取流程列表失败", {
+      toast({
+        title: "获取流程列表失败",
         description: error.message,
       })
     }
@@ -101,7 +101,7 @@ export default function FlowList() {
           />
         ))}
       </GridLayout>
-      <LoadingModal title="删除中" loading={deleteFlow.isPending} />
+      <Loading title="删除中" loading={deleteFlow.isPending} />
     </>
   )
 }

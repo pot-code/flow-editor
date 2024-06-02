@@ -30,8 +30,8 @@ export function ResizeWidth({
       <motion.div
         style={{ left: defaultWidth - dragWidth / 2, x: deltaX, width: dragWidth }}
         className="absolute top-0 h-full transition-colors duration-0
-        hover:bg-primary-200 hover:cursor-col-resize hover:delay-300
-        active:bg-primary-400 active:delay-0"
+        hover:bg-blue-200 hover:cursor-col-resize hover:delay-300
+        active:bg-blue-400 active:delay-0"
         drag="x"
         dragElastic={0}
         dragMomentum={false}

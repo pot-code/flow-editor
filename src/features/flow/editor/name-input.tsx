@@ -30,7 +30,7 @@ const NameInput = memo<NameInputProps>(({ value, onChange }) => {
       <div
         contentEditable
         suppressContentEditableWarning
-        className="outline-none whitespace-pre text-foreground-500 focus:text-foreground"
+        className="outline-none whitespace-pre text-neutral-300 focus:text-foreground"
         ref={domRef}
         onKeyDown={onKeyDown}
         onBlur={onBlur}

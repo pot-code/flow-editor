@@ -1,9 +1,9 @@
 import { Handle, NodeProps, Position } from "reactflow"
-import { Card, CardHeader, CardBody } from "@nextui-org/card"
-import { Divider } from "@nextui-org/divider"
-import { Input } from "@nextui-org/input"
 import useNode from "../use-node"
 import { useDataFlowContext } from "../editor/context"
+import { Separator } from "@/components/ui/separator"
+import { Input } from "@/components/ui/input"
+import { Card, CardContent, CardHeader } from "@/components/ui/card"
 
 const Number = memo<NodeProps>(({ id, isConnectable, data }) => {
   const [value, setValue] = useState(data.value)
@@ -31,19 +31,17 @@ const Number = memo<NodeProps>(({ id, isConnectable, data }) => {
     <>
       <Card>
         <CardHeader>Number</CardHeader>
-        <Divider />
-        <CardBody>
+        <Separator />
+        <CardContent className="pt-4">
           <Input
             className="nodrag"
-            size="sm"
             type="number"
-            variant="bordered"
             placeholder="请输入数字"
             value={value}
             onChange={onChange}
             onBlur={onBlur}
           />
-        </CardBody>
+        </CardContent>
       </Card>
       <Handle id="value" type="source" position={Position.Right} isConnectable={isConnectable} onConnect={onConnect} />
     </>
