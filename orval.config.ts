@@ -10,6 +10,12 @@ export default defineConfig({
     },
     output: {
       target: "./src/api/flow.ts",
+      override: {
+        mutator: {
+          path: "src/lib/http/instance.ts",
+          name: "customInstance",
+        },
+      },
     },
   },
   account: {
@@ -21,6 +27,12 @@ export default defineConfig({
     },
     output: {
       target: "./src/api/account.ts",
+      override: {
+        mutator: {
+          path: "src/lib/http/instance.ts",
+          name: "customInstance",
+        },
+      },
     },
   },
 })

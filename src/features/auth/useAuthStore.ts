@@ -1,4 +1,4 @@
-import axios from "axios"
+import { AXIOS_INSTANCE } from "@/lib/http/instance"
 import { isNil } from "lodash-es"
 import { create } from "zustand"
 
@@ -28,7 +28,7 @@ export const setIsAuthenticated = (isAuthenticated: boolean) => useAuthStore.set
 export const setAccessToken = (accessToken: string | null) => {
   useAuthStore.setState({ accessToken })
   if (!isNil(accessToken)) {
-    axios.defaults.headers.common["Authorization"] = `Bearer ${accessToken}`
+    AXIOS_INSTANCE.defaults.headers.common["Authorization"] = `Bearer ${accessToken}`
   }
 }
 export const setUser = (user: User) => {

@@ -31,8 +31,7 @@ function FlowEditor() {
   const graphRef = useRef<GraphRef>(null)
   const flowQuery = useQuery({
     queryKey: ["flow", flowId],
-    queryFn: () => delayedPromise(0.5 * time.Second, getFlowId)(flowId).then((res) => res.data),
-    enabled: Boolean(flowId),
+    queryFn: () => delayedPromise(0.5 * time.Second, getFlowId)(flowId),
   })
   const updateFlow = useMutation({
     mutationFn: delayedPromise(0.5 * time.Second, ({ id, data }) => putFlowId(id, data)),

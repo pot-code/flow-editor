@@ -5,91 +5,94 @@
  * Flow Editor APIs
  * OpenAPI spec version: 1.0
  */
-import * as axios from "axios"
-import type { AxiosRequestConfig, AxiosResponse } from "axios"
+import { customInstance } from "../lib/http/instance"
+import type { BodyType } from "../lib/http/instance"
 export interface FlowUpdateFlowInput {
   edges?: string
-  id?: number
+  id: number
   nodes?: string
   owner?: string
-  title?: string
+  title: string
 }
 
 export interface FlowFlowListObjectOutput {
-  createdAt?: string
-  id?: number
-  title?: string
+  created_at: string
+  id: number
+  title: string
 }
 
 export interface FlowFlowDetailOutput {
-  createdAt?: string
+  created_at: string
   edges?: string
-  id?: number
+  id: number
   nodes?: string
-  title?: string
+  title: string
 }
 
 export interface FlowCreateFlowInput {
   edges?: string
   nodes?: string
   owner?: string
-  title?: string
+  title: string
 }
 
 export interface AccountAccountOutput {
-  activated?: boolean
-  membership?: number
+  activated: boolean
+  membership: number
 }
+
+type SecondParameter<T extends (...args: any) => any> = Parameters<T>[1]
 
 /**
  * @summary get flow list
  */
-export const getFlow = <TData = AxiosResponse<FlowFlowListObjectOutput[]>>(
-  options?: AxiosRequestConfig,
-): Promise<TData> => {
-  return axios.default.get(`/flow`, options)
+export const getFlow = (options?: SecondParameter<typeof customInstance>) => {
+  return customInstance<FlowFlowListObjectOutput[]>({ url: `/flow`, method: "GET" }, options)
 }
 
 /**
  * @summary create flow
  */
-export const postFlow = <TData = AxiosResponse<FlowFlowDetailOutput>>(
-  flowCreateFlowInput: FlowCreateFlowInput,
-  options?: AxiosRequestConfig,
-): Promise<TData> => {
-  return axios.default.post(`/flow`, flowCreateFlowInput, options)
+export const postFlow = (
+  flowCreateFlowInput: BodyType<FlowCreateFlowInput>,
+  options?: SecondParameter<typeof customInstance>,
+) => {
+  return customInstance<FlowFlowDetailOutput>(
+    { url: `/flow`, method: "POST", headers: { "Content-Type": "application/json" }, data: flowCreateFlowInput },
+    options,
+  )
 }
 
 /**
  * @summary get flow detail
  */
-export const getFlowId = <TData = AxiosResponse<FlowFlowDetailOutput>>(
-  id: string,
-  options?: AxiosRequestConfig,
-): Promise<TData> => {
-  return axios.default.get(`/flow/${id}`, options)
+export const getFlowId = (id: string, options?: SecondParameter<typeof customInstance>) => {
+  return customInstance<FlowFlowDetailOutput>({ url: `/flow/${id}`, method: "GET" }, options)
 }
 
 /**
  * @summary update flow
  */
-export const putFlowId = <TData = AxiosResponse<FlowFlowDetailOutput>>(
+export const putFlowId = (
   id: string,
-  flowUpdateFlowInput: FlowUpdateFlowInput,
-  options?: AxiosRequestConfig,
-): Promise<TData> => {
-  return axios.default.put(`/flow/${id}`, flowUpdateFlowInput, options)
+  flowUpdateFlowInput: BodyType<FlowUpdateFlowInput>,
+  options?: SecondParameter<typeof customInstance>,
+) => {
+  return customInstance<FlowFlowDetailOutput>(
+    { url: `/flow/${id}`, method: "PUT", headers: { "Content-Type": "application/json" }, data: flowUpdateFlowInput },
+    options,
+  )
 }
 
 /**
  * @summary delete flow
  */
-export const deleteFlowId = <TData = AxiosResponse<void>>(id: string, options?: AxiosRequestConfig): Promise<TData> => {
-  return axios.default.delete(`/flow/${id}`, options)
+export const deleteFlowId = (id: string, options?: SecondParameter<typeof customInstance>) => {
+  return customInstance<void>({ url: `/flow/${id}`, method: "DELETE" }, options)
 }
 
-export type GetFlowResult = AxiosResponse<FlowFlowListObjectOutput[]>
-export type PostFlowResult = AxiosResponse<FlowFlowDetailOutput>
-export type GetFlowIdResult = AxiosResponse<FlowFlowDetailOutput>
-export type PutFlowIdResult = AxiosResponse<FlowFlowDetailOutput>
-export type DeleteFlowIdResult = AxiosResponse<void>
+export type GetFlowResult = NonNullable<Awaited<ReturnType<typeof getFlow>>>
+export type PostFlowResult = NonNullable<Awaited<ReturnType<typeof postFlow>>>
+export type GetFlowIdResult = NonNullable<Awaited<ReturnType<typeof getFlowId>>>
+export type PutFlowIdResult = NonNullable<Awaited<ReturnType<typeof putFlowId>>>
+export type DeleteFlowIdResult = NonNullable<Awaited<ReturnType<typeof deleteFlowId>>>

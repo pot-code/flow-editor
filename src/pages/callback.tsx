@@ -14,11 +14,11 @@ function Callback() {
     zitadel.userManager.signinRedirectCallback().then(async (user) => {
       setIsAuthenticated(true)
       setAccessToken(user.access_token)
-      const { data } = await getAccount()
+      const account = await getAccount()
       setUser({
         name: user.profile.name,
         avatar: user.profile.picture,
-        ...data,
+        ...account,
       })
       navigate({ to: "/", replace: true })
     })

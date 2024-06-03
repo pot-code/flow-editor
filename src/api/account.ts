@@ -5,49 +5,48 @@
  * Flow Editor APIs
  * OpenAPI spec version: 1.0
  */
-import * as axios from "axios"
-import type { AxiosRequestConfig, AxiosResponse } from "axios"
+import { customInstance } from "../lib/http/instance"
 export interface FlowUpdateFlowInput {
   edges?: string
-  id?: number
+  id: number
   nodes?: string
   owner?: string
-  title?: string
+  title: string
 }
 
 export interface FlowFlowListObjectOutput {
-  createdAt?: string
-  id?: number
-  title?: string
+  created_at: string
+  id: number
+  title: string
 }
 
 export interface FlowFlowDetailOutput {
-  createdAt?: string
+  created_at: string
   edges?: string
-  id?: number
+  id: number
   nodes?: string
-  title?: string
+  title: string
 }
 
 export interface FlowCreateFlowInput {
   edges?: string
   nodes?: string
   owner?: string
-  title?: string
+  title: string
 }
 
 export interface AccountAccountOutput {
-  activated?: boolean
-  membership?: number
+  activated: boolean
+  membership: number
 }
+
+type SecondParameter<T extends (...args: any) => any> = Parameters<T>[1]
 
 /**
  * @summary get account
  */
-export const getAccount = <TData = AxiosResponse<AccountAccountOutput>>(
-  options?: AxiosRequestConfig,
-): Promise<TData> => {
-  return axios.default.get(`/account`, options)
+export const getAccount = (options?: SecondParameter<typeof customInstance>) => {
+  return customInstance<AccountAccountOutput>({ url: `/account`, method: "GET" }, options)
 }
 
-export type GetAccountResult = AxiosResponse<AccountAccountOutput>
+export type GetAccountResult = NonNullable<Awaited<ReturnType<typeof getAccount>>>

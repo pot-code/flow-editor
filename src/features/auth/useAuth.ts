@@ -14,11 +14,11 @@ export function useAuth() {
 
         if (!isNil(user)) {
           setAccessToken(user.access_token)
-          const { data } = await getAccount()
+          const account = await getAccount()
           setUser({
             name: user.profile.name,
             avatar: user.profile.picture,
-            ...data,
+            ...account,
           })
         }
       })

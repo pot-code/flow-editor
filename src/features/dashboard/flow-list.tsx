@@ -41,7 +41,7 @@ export default function FlowList() {
   const qc = useQueryClient()
   const { isLoading, isError, data, error } = useQuery({
     queryKey: ["flow", "list"],
-    queryFn: () => delayedPromise(0.3 * time.Second, getFlow)().then((res) => res.data),
+    queryFn: delayedPromise(0.3 * time.Second, getFlow),
   })
   const deleteFlow = useMutation({
     mutationFn: delayedPromise(0.5 * time.Second, deleteFlowId),
@@ -90,7 +90,7 @@ export default function FlowList() {
   return (
     <>
       <GridLayout>
-        {data!.map((item) => (
+        {data?.map((item) => (
           <FlowCard
             key={item.id}
             id={item.id}

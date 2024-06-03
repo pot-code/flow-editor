@@ -30,7 +30,7 @@ export default function Home() {
   const navigate = useNavigate()
   const createFlowMutation = useMutation({
     mutationFn: delayedPromise(1 * time.Second, postFlow),
-    onSuccess: ({ data }) => {
+    onSuccess: (data) => {
       navigate({
         to: `/editor/${data.id}`,
       })
