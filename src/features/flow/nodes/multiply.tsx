@@ -27,7 +27,7 @@ const Multiply = memo<NodeProps>(({ id, isConnectable, data }) => {
   return (
     <>
       <Card>
-        <CardHeader>Multiple</CardHeader>
+        <CardHeader>Multiply</CardHeader>
         <Separator />
         <CardContent className="flex pt-4 flex-col gap-2">
           <Badge color={isConnected("target", "op1") ? "success" : "default"}>Input: {data.op1 ?? "NaN"}</Badge>
