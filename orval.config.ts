@@ -1,38 +1,30 @@
 import { defineConfig } from "orval"
 
-export default defineConfig({
-  flow: {
-    input: {
-      target: "http://127.0.0.1:3000/swagger/doc.json",
-      filters: {
-        tags: ["flow"],
-      },
-    },
-    output: {
-      target: "./src/api/flow.ts",
-      override: {
-        mutator: {
-          path: "src/lib/http/instance.ts",
-          name: "customInstance",
+const modules = ["account", "flow"]
+
+export default defineConfig(
+  Object.fromEntries(
+    modules.map((name) => [
+      name,
+      {
+        input: {
+          target: "http://127.0.0.1:3001/openapi.json",
+          filters: {
+            tags: [name],
+          },
+        },
+        output: {
+          prettier: true,
+          target: `./src/api/${name}.ts`,
+          override: {
+            mutator: {
+              path: "src/lib/http/instance.ts",
+              name: "customInstance",
+            },
+            operationName: ({ operationId }) => operationId!.split("#")[1],
+          },
         },
       },
-    },
-  },
-  account: {
-    input: {
-      target: "http://127.0.0.1:3000/swagger/doc.json",
-      filters: {
-        tags: ["account"],
-      },
-    },
-    output: {
-      target: "./src/api/account.ts",
-      override: {
-        mutator: {
-          path: "src/lib/http/instance.ts",
-          name: "customInstance",
-        },
-      },
-    },
-  },
-})
+    ]),
+  ),
+)

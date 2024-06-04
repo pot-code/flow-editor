@@ -1,4 +1,4 @@
-import { getFlowId, putFlowId } from "@/api/flow"
+import { getFlow, updateFlow } from "@/api/flow"
 import { Button } from "@/components/ui/button"
 import Loading from "@/components/ui/loading"
 import { useToast } from "@/components/ui/use-toast"
@@ -6,6 +6,7 @@ import { DEFAULT_FLOW_NAME } from "@/features/flow/config"
 import DataFlowProvider from "@/features/flow/editor/context"
 import FlowGraph, { GraphRef } from "@/features/flow/editor/graph"
 import NameInput from "@/features/flow/editor/name-input"
+import { extractErrorMessage } from "@/lib/http"
 import { delayedPromise } from "@/utils/promise"
 import time from "@/utils/time"
 import { ArrowLeft } from "@phosphor-icons/react"
@@ -23,18 +24,19 @@ function FlowEditor() {
   const { toast } = useToast()
   const navigate = useNavigate()
 
+  const flowId = Route.useParams().flowId
   const [nodes, setNodes] = useState<Node[]>([])
   const [edges, setEdges] = useState<Edge[]>([])
   const [graphName, setGraphName] = useState("")
-
-  const flowId = Route.useParams().flowId
   const graphRef = useRef<GraphRef>(null)
-  const flowQuery = useQuery({
+
+  const { data, isLoading, isFetching } = useQuery({
     queryKey: ["flow", flowId],
-    queryFn: () => delayedPromise(0.5 * time.Second, getFlowId)(flowId),
+    queryFn: () => delayedPromise(0.5 * time.Second, getFlow)(flowId),
   })
-  const updateFlow = useMutation({
-    mutationFn: delayedPromise(0.5 * time.Second, ({ id, data }) => putFlowId(id, data)),
+
+  const updateFlowMutation = useMutation({
+    mutationFn: delayedPromise(0.5 * time.Second, ({ id, data }) => updateFlow(id, data)),
     onSuccess: () => {
       toast({ title: "保存成功" })
       queryClient.invalidateQueries({
@@ -44,7 +46,7 @@ function FlowEditor() {
     onError: (err) => {
       toast({
         title: "保存失败",
-        description: err.message,
+        description: extractErrorMessage(err),
       })
     },
   })
@@ -53,7 +55,7 @@ function FlowEditor() {
     const nds = graphRef.current?.getNodes()
     const eds = graphRef.current?.getEdges()
     if (nds && eds) {
-      updateFlow.mutate({
+      updateFlowMutation.mutate({
         id: flowId,
         data: {
           nodes: JSON.stringify(nds),
@@ -70,18 +72,12 @@ function FlowEditor() {
   }
 
   useEffect(() => {
-    if (flowQuery.data) {
-      if (flowQuery.data.nodes) setNodes(JSON.parse(flowQuery.data.nodes))
-      if (flowQuery.data.edges) setEdges(JSON.parse(flowQuery.data.edges))
-      setGraphName(flowQuery.data.title)
+    if (data) {
+      if (data.nodes) setNodes(JSON.parse(data.nodes))
+      if (data.edges) setEdges(JSON.parse(data.edges))
+      setGraphName(data.title)
     }
-  }, [flowQuery.data])
-
-  useEffect(() => {
-    if (flowQuery.isError) {
-      toast({ title: "加载失败" })
-    }
-  }, [flowQuery.isError, toast])
+  }, [data])
 
   return (
     <div className="h-screen w-screen flex flex-col">
@@ -99,12 +95,12 @@ function FlowEditor() {
       <div className="flex-grow flex">
         <DataFlowProvider>
           <ReactFlowProvider>
-            <FlowGraph ref={graphRef} isRefreshing={flowQuery.isFetching} initialNodes={nodes} initialEdges={edges} />
+            <FlowGraph ref={graphRef} isRefreshing={isFetching} initialNodes={nodes} initialEdges={edges} />
           </ReactFlowProvider>
         </DataFlowProvider>
       </div>
-      <Loading title="保存中" loading={updateFlow.isPending} />
-      <Loading title="载入中" loading={flowQuery.isLoading} />
+      <Loading title="保存中" loading={updateFlowMutation.isPending} />
+      <Loading title="载入中" loading={isLoading} />
     </div>
   )
 }

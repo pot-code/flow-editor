@@ -1,14 +1,15 @@
-import { deleteFlowId, getFlow } from "@/api/flow"
+import { copyFlow, deleteFlow, getFlowList } from "@/api/flow"
 import { Card, CardHeader } from "@/components/ui/card"
+import Loading from "@/components/ui/loading"
 import { Skeleton } from "@/components/ui/skeleton"
 import { useToast } from "@/components/ui/use-toast"
+import { extractErrorMessage } from "@/lib/http"
 import { delayedPromise } from "@/utils/promise"
 import time from "@/utils/time"
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query"
 import { useNavigate } from "@tanstack/react-router"
 import { isEmpty } from "lodash-es"
 import FlowCard from "./flow-card"
-import Loading from "@/components/ui/loading"
 
 function GridLayout({ children }: { children: React.ReactNode }) {
   return <div className="grid grid-cols-4 monitor-2k:grid-cols-6 monitor-4k:grid-cols-8 gap-4">{children}</div>
@@ -39,12 +40,12 @@ export default function FlowList() {
   const { toast } = useToast()
   const navigate = useNavigate()
   const qc = useQueryClient()
-  const { isLoading, isError, data, error } = useQuery({
+  const { isLoading, data } = useQuery({
     queryKey: ["flow", "list"],
-    queryFn: delayedPromise(0.3 * time.Second, getFlow),
+    queryFn: delayedPromise(0.3 * time.Second, getFlowList),
   })
-  const deleteFlow = useMutation({
-    mutationFn: delayedPromise(0.5 * time.Second, deleteFlowId),
+  const deleteFlowMutation = useMutation({
+    mutationFn: delayedPromise(0.5 * time.Second, deleteFlow),
     onSuccess: () => {
       toast({ title: "删除成功" })
       qc.invalidateQueries({
@@ -54,7 +55,22 @@ export default function FlowList() {
     onError: (err) => {
       toast({
         title: "删除失败",
-        description: err.message,
+        description: extractErrorMessage(err),
+      })
+    },
+  })
+  const copyFlowMutation = useMutation({
+    mutationFn: delayedPromise(0.5 * time.Second, copyFlow),
+    onSuccess: () => {
+      toast({ title: "复制成功" })
+      qc.invalidateQueries({
+        queryKey: ["flow", "list"],
+      })
+    },
+    onError: (err: Error) => {
+      toast({
+        title: "复制失败",
+        description: extractErrorMessage(err),
       })
     },
   })
@@ -66,18 +82,12 @@ export default function FlowList() {
   }
 
   function onDeleteFlow(id: number) {
-    deleteFlow.mutate(id.toString())
+    deleteFlowMutation.mutate(id.toString())
   }
 
-  useEffect(() => {
-    if (isError) {
-      toast({
-        title: "获取流程列表失败",
-        description: error.message,
-      })
-    }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [isError])
+  function onCopyFlow(id: number) {
+    copyFlowMutation.mutate(id.toString())
+  }
 
   if (isLoading) {
     return <LoadingState />
@@ -98,10 +108,12 @@ export default function FlowList() {
             createdAt={item.created_at}
             onDelete={onDeleteFlow}
             onEdit={onEditFlow}
+            onCopy={onCopyFlow}
           />
         ))}
       </GridLayout>
-      <Loading title="删除中" loading={deleteFlow.isPending} />
+      <Loading title="删除中..." loading={deleteFlowMutation.isPending} />
+      <Loading title="复制中..." loading={copyFlowMutation.isPending} />
     </>
   )
 }

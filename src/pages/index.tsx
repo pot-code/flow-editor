@@ -1,4 +1,4 @@
-import { postFlow } from "@/api/flow"
+import { createFlow } from "@/api/flow"
 import { ResizeWidth } from "@/components/resizable"
 import { Avatar, AvatarImage } from "@/components/ui/avatar"
 import { Button } from "@/components/ui/button"
@@ -29,7 +29,7 @@ export default function Home() {
   const { avatar } = useAuthStore((state) => state.user)
   const navigate = useNavigate()
   const createFlowMutation = useMutation({
-    mutationFn: delayedPromise(1 * time.Second, postFlow),
+    mutationFn: delayedPromise(1 * time.Second, createFlow),
     onSuccess: (data) => {
       navigate({
         to: `/editor/${data.id}`,

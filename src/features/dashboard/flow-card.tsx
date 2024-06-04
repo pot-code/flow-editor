@@ -10,9 +10,10 @@ export interface FlowCardProps {
   createdAt: string
   onEdit: (id: number) => void
   onDelete: (id: number) => void
+  onCopy: (id: number) => void
 }
 
-const FlowCard = memo(({ id, name, createdAt, onEdit, onDelete }: FlowCardProps) => {
+const FlowCard = memo(({ id, name, createdAt, onEdit, onDelete, onCopy }: FlowCardProps) => {
   const handleEdit = (e: React.MouseEvent) => {
     e.stopPropagation()
     onEdit(id)
@@ -20,6 +21,10 @@ const FlowCard = memo(({ id, name, createdAt, onEdit, onDelete }: FlowCardProps)
   const handleDelete = (e: React.MouseEvent) => {
     e.stopPropagation()
     onDelete(id)
+  }
+  const handleCopy = (e: React.MouseEvent) => {
+    e.stopPropagation()
+    onCopy(id)
   }
 
   return (
@@ -34,8 +39,9 @@ const FlowCard = memo(({ id, name, createdAt, onEdit, onDelete }: FlowCardProps)
               </Button>
             </DropdownMenuTrigger>
             <DropdownMenuContent>
-              <DropdownMenuItem key="delete" className="text-destructive" onClick={handleDelete}>
-                删除
+              <DropdownMenuItem onClick={handleCopy}>复制</DropdownMenuItem>
+              <DropdownMenuItem onClick={handleDelete}>
+                <span className="text-destructive">删除</span>
               </DropdownMenuItem>
             </DropdownMenuContent>
             <DropdownMenu></DropdownMenu>
