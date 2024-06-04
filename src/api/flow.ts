@@ -6,15 +6,6 @@
  */
 import { customInstance } from "../lib/http/instance"
 import type { BodyType } from "../lib/http/instance"
-export interface UpdateFlowData {
-  /** flow 边 */
-  edges?: string
-  /** flow 节点 */
-  nodes?: string
-  /** flow 标题 */
-  title?: string
-}
-
 export interface FlowListItem {
   /** flow 创建时间 */
   created_at: string
@@ -43,7 +34,7 @@ export interface CreateFlowRequestBody {
   /** flow 节点 */
   nodes?: string
   /** flow 标题 */
-  title: string
+  title?: string
 }
 
 export interface AccountInfo {
@@ -97,11 +88,11 @@ export const getFlow = (id: string, options?: SecondParameter<typeof customInsta
  */
 export const updateFlow = (
   id: string,
-  updateFlowData: BodyType<UpdateFlowData>,
+  createFlowRequestBody: BodyType<CreateFlowRequestBody>,
   options?: SecondParameter<typeof customInstance>,
 ) => {
   return customInstance<FlowDetail>(
-    { url: `/flow/${id}`, method: "PUT", headers: { "Content-Type": "application/json" }, data: updateFlowData },
+    { url: `/flow/${id}`, method: "PUT", headers: { "Content-Type": "application/json" }, data: createFlowRequestBody },
     options,
   )
 }

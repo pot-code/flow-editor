@@ -86,8 +86,8 @@ export default function Home() {
             <div className="flex gap-2">
               <Tabs defaultValue="grid">
                 <TabsList>
-                  <TabsTrigger value="grid">Grid</TabsTrigger>
-                  <TabsTrigger value="list">List</TabsTrigger>
+                  <TabsTrigger value="grid">宫格</TabsTrigger>
+                  <TabsTrigger value="list">列表</TabsTrigger>
                 </TabsList>
               </Tabs>
               <Input />

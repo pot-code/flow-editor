@@ -5,15 +5,6 @@
  * OpenAPI spec version: 0.0.1
  */
 import { customInstance } from "../lib/http/instance"
-export interface UpdateFlowData {
-  /** flow 边 */
-  edges?: string
-  /** flow 节点 */
-  nodes?: string
-  /** flow 标题 */
-  title?: string
-}
-
 export interface FlowListItem {
   /** flow 创建时间 */
   created_at: string
@@ -42,7 +33,7 @@ export interface CreateFlowRequestBody {
   /** flow 节点 */
   nodes?: string
   /** flow 标题 */
-  title: string
+  title?: string
 }
 
 export interface AccountInfo {
