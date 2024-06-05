@@ -6,7 +6,7 @@
  */
 import { customInstance } from "../lib/http/instance"
 import type { BodyType } from "../lib/http/instance"
-export interface FlowListItem {
+export interface FlowListItemData {
   /** flow 创建时间 */
   created_at: string
   /** flow id */
@@ -15,7 +15,7 @@ export interface FlowListItem {
   title: string
 }
 
-export interface FlowDetail {
+export interface FlowDetailData {
   /** flow 创建时间 */
   created_at: string
   /** flow 边 */
@@ -49,7 +49,7 @@ type SecondParameter<T extends (...args: any) => any> = Parameters<T>[1]
  * @summary getFlowList flow
  */
 export const getFlowList = (options?: SecondParameter<typeof customInstance>) => {
-  return customInstance<FlowListItem[]>({ url: `/flow`, method: "GET" }, options)
+  return customInstance<FlowListItemData[]>({ url: `/flow`, method: "GET" }, options)
 }
 
 /**
@@ -60,7 +60,7 @@ export const createFlow = (
   createFlowRequestBody: BodyType<CreateFlowRequestBody>,
   options?: SecondParameter<typeof customInstance>,
 ) => {
-  return customInstance<FlowDetail>(
+  return customInstance<FlowDetailData>(
     { url: `/flow`, method: "POST", headers: { "Content-Type": "application/json" }, data: createFlowRequestBody },
     options,
   )
@@ -79,7 +79,7 @@ export const deleteFlow = (id: string, options?: SecondParameter<typeof customIn
  * @summary getFlow flow
  */
 export const getFlow = (id: string, options?: SecondParameter<typeof customInstance>) => {
-  return customInstance<FlowDetail>({ url: `/flow/${id}`, method: "GET" }, options)
+  return customInstance<FlowDetailData>({ url: `/flow/${id}`, method: "GET" }, options)
 }
 
 /**
@@ -91,7 +91,7 @@ export const updateFlow = (
   createFlowRequestBody: BodyType<CreateFlowRequestBody>,
   options?: SecondParameter<typeof customInstance>,
 ) => {
-  return customInstance<FlowDetail>(
+  return customInstance<FlowDetailData>(
     { url: `/flow/${id}`, method: "PUT", headers: { "Content-Type": "application/json" }, data: createFlowRequestBody },
     options,
   )

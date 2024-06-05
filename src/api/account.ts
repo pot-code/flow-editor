@@ -5,7 +5,7 @@
  * OpenAPI spec version: 0.0.1
  */
 import { customInstance } from "../lib/http/instance"
-export interface FlowListItem {
+export interface FlowListItemData {
   /** flow 创建时间 */
   created_at: string
   /** flow id */
@@ -14,7 +14,7 @@ export interface FlowListItem {
   title: string
 }
 
-export interface FlowDetail {
+export interface FlowDetailData {
   /** flow 创建时间 */
   created_at: string
   /** flow 边 */
