@@ -11,6 +11,7 @@ import useAuthStore from "@/features/auth/useAuthStore"
 import FlowList from "@/features/dashboard/flow-list"
 import { DEFAULT_FLOW_NAME } from "@/features/flow/config"
 import zitadel from "@/lib/auth/zitadel"
+import { extractErrorMessage } from "@/lib/http"
 import { delayedPromise } from "@/utils/promise"
 import time from "@/utils/time"
 import { MagnifyingGlass, Plus } from "@phosphor-icons/react"
@@ -38,7 +39,7 @@ export default function Home() {
     onError: (err) => {
       toast({
         title: "创建失败",
-        description: err.message,
+        description: extractErrorMessage(err),
       })
     },
   })
