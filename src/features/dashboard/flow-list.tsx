@@ -1,5 +1,5 @@
 import { copyFlow, deleteFlow, getFlowList } from "@/api/flow"
-import { Card, CardDescription, CardHeader } from "@/components/ui/card"
+import { Card, CardHeader } from "@/components/ui/card"
 import Loading from "@/components/ui/loading"
 import { Skeleton } from "@/components/ui/skeleton"
 import { useToast } from "@/components/ui/use-toast"
@@ -24,9 +24,7 @@ function LoadingState({ count = 3 }: { count?: number }) {
           <Card key={index}>
             <CardHeader>
               <Skeleton className="h-9 w-full rounded-lg" />
-              <CardDescription>
-                <Skeleton className="h-5 w-[128px] rounded-lg" />
-              </CardDescription>
+              <Skeleton className="h-5 w-[128px] rounded-lg" />
             </CardHeader>
           </Card>
         ))}
