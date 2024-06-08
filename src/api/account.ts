@@ -4,42 +4,8 @@
  * 流程编辑器 API
  * OpenAPI spec version: 0.0.1
  */
+import type { AccountInfo } from "./model"
 import { customInstance } from "../lib/http/instance"
-export interface FlowListItemData {
-  /** flow 创建时间 */
-  created_at: string
-  /** flow id */
-  id: number
-  /** flow 标题 */
-  title: string
-}
-
-export interface FlowDetailData {
-  /** flow 创建时间 */
-  created_at: string
-  /** flow 边 */
-  edges?: string
-  /** flow id */
-  id: number
-  /** flow 节点 */
-  nodes?: string
-  /** flow 标题 */
-  title: string
-}
-
-export interface CreateFlowRequestBody {
-  /** flow 边 */
-  edges?: string
-  /** flow 节点 */
-  nodes?: string
-  /** flow 标题 */
-  title?: string
-}
-
-export interface AccountInfo {
-  activated: boolean
-  membership: number
-}
 
 type SecondParameter<T extends (...args: any) => any> = Parameters<T>[1]
 

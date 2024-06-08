@@ -15,6 +15,7 @@ export default defineConfig(
         },
         output: {
           prettier: true,
+          schemas: `./src/api/model`,
           target: `./src/api/${name}.ts`,
           override: {
             mutator: {
