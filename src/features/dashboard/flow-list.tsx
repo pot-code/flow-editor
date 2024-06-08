@@ -1,5 +1,5 @@
 import { copyFlow, deleteFlow, getFlowList } from "@/api/flow"
-import { Card, CardHeader } from "@/components/ui/card"
+import { Card, CardDescription, CardHeader } from "@/components/ui/card"
 import Loading from "@/components/ui/loading"
 import { Skeleton } from "@/components/ui/skeleton"
 import { useToast } from "@/components/ui/use-toast"
@@ -12,7 +12,7 @@ import { isEmpty } from "lodash-es"
 import FlowCard from "./flow-card"
 
 function GridLayout({ children }: { children: React.ReactNode }) {
-  return <div className="grid grid-cols-4 monitor-2k:grid-cols-6 monitor-4k:grid-cols-8 gap-4">{children}</div>
+  return <div className="grid grid-cols-5 monitor-2k:grid-cols-6 monitor-4k:grid-cols-8 gap-4">{children}</div>
 }
 
 function LoadingState({ count = 3 }: { count?: number }) {
@@ -23,8 +23,10 @@ function LoadingState({ count = 3 }: { count?: number }) {
         .map((_, index) => (
           <Card key={index}>
             <CardHeader>
-              <Skeleton className="h-8 my-1 w-full rounded-lg" />
-              <Skeleton className="h-5 w-[128px] rounded-lg" />
+              <Skeleton className="h-9 w-full rounded-lg" />
+              <CardDescription>
+                <Skeleton className="h-5 w-[128px] rounded-lg" />
+              </CardDescription>
             </CardHeader>
           </Card>
         ))}

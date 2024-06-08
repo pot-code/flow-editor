@@ -12,7 +12,7 @@ AXIOS_INSTANCE.interceptors.response.use(
 
     const { response } = error
     if (response && response.status === 401) {
-      return zitadel.userManager.signinRedirect()
+      return zitadel.signout()
     }
     return Promise.reject(error)
   },

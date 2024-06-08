@@ -1,7 +1,7 @@
 import { cn } from "@/utils/shad"
 import { cva, type VariantProps } from "class-variance-authority"
 
-const spinnerVariants = cva("animate-spin h-5 w-5 text-neutral-500", {
+const spinnerVariants = cva("animate-spin h-5 w-5 text-primary", {
   variants: {
     size: {
       default: "h-5 w-5",

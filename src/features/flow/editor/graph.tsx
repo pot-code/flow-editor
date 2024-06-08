@@ -1,10 +1,9 @@
+import { Button } from "@/components/ui/button"
+import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from "@/components/ui/dropdown-menu"
 import { Plus } from "@phosphor-icons/react"
 import ReactFlow, { Background, BackgroundVariant, Controls, Edge, MarkerType, Node, Panel } from "reactflow"
 import { getNodeTypes } from "../nodes"
 import useGraph from "./use-graph"
-import { Button } from "@/components/ui/button"
-import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from "@/components/ui/dropdown-menu"
-import Spinner from "@/components/ui/spinner"
 
 const nodeTypes = getNodeTypes()
 
@@ -19,7 +18,7 @@ interface GraphProps {
   initialEdges?: Edge[]
 }
 
-const Graph = forwardRef<GraphRef, GraphProps>(({ isRefreshing, initialNodes = [], initialEdges = [] }, ref) => {
+const Graph = forwardRef<GraphRef, GraphProps>(({ initialNodes = [], initialEdges = [] }, ref) => {
   const { graphRef, nodes, edges, setEdges, setNodes, onNodesChange, onEdgesChange, onConnect, onAddNode, onAddEdge } =
     useGraph()
 
@@ -78,7 +77,6 @@ const Graph = forwardRef<GraphRef, GraphProps>(({ isRefreshing, initialNodes = [
               <DropdownMenuItem onSelect={() => onAddNode("result")}>Result</DropdownMenuItem>
             </DropdownMenuContent>
           </DropdownMenu>
-          {isRefreshing && <Spinner />}
         </div>
       </Panel>
       <Controls />

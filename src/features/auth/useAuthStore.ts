@@ -27,7 +27,7 @@ const useAuthStore = create<State>(() => ({
 export const setIsAuthenticated = (isAuthenticated: boolean) => useAuthStore.setState(() => ({ isAuthenticated }))
 export const setAccessToken = (accessToken: string | null) => {
   useAuthStore.setState({ accessToken })
-  if (!isNil(accessToken)) {
+  if (accessToken) {
     AXIOS_INSTANCE.defaults.headers.common["Authorization"] = `Bearer ${accessToken}`
   }
 }
