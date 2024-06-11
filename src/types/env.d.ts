@@ -6,7 +6,7 @@ interface ImportMetaEnv {
   readonly VITE_MOCK_ENABLED: string
   readonly VITE_ZITADEL_AUTHORITY: string
   readonly VITE_ZITADEL_CLIENT_ID: string
-  readonly VITE_ZITADEL_API_ID: string
+  readonly VITE_ZITADEL_PROJECT_RESOURCE_ID: string
 }
 
 interface ImportMeta {
