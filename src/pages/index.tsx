@@ -1,6 +1,6 @@
 import { createFlow } from "@/api/flow"
 import { ResizeWidth } from "@/components/resizable"
-import { Avatar, AvatarImage } from "@/components/ui/avatar"
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
 import { Button } from "@/components/ui/button"
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from "@/components/ui/dropdown-menu"
 import { Input } from "@/components/ui/input"
@@ -14,7 +14,7 @@ import zitadel from "@/lib/auth/zitadel"
 import { extractErrorMessage } from "@/lib/http"
 import { delayedPromise } from "@/utils/promise"
 import time from "@/utils/time"
-import { MagnifyingGlass, Plus } from "@phosphor-icons/react"
+import { MagnifyingGlass, Plus, User } from "@phosphor-icons/react"
 import { useMutation } from "@tanstack/react-query"
 import { createFileRoute, redirect, useNavigate } from "@tanstack/react-router"
 
@@ -27,7 +27,7 @@ export const Route = createFileRoute("/")({
 
 export default function Home() {
   const { toast } = useToast()
-  const { avatar } = useAuthStore((state) => state.user)
+  const { avatar, name } = useAuthStore((state) => state.user)
   const navigate = useNavigate()
   const createFlowMutation = useMutation({
     mutationFn: delayedPromise(1 * time.Second, createFlow),
@@ -63,6 +63,9 @@ export default function Home() {
             <DropdownMenuTrigger>
               <Avatar className="cursor-pointer">
                 <AvatarImage className="object-cover" src={avatar} />
+                <AvatarFallback>
+                  <User />
+                </AvatarFallback>
               </Avatar>
             </DropdownMenuTrigger>
             <DropdownMenuContent>
