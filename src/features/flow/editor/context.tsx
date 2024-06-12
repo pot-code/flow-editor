@@ -14,7 +14,7 @@ interface Subscription {
   stub: Unsubscribable
 }
 
-const DataFlowContext = React.createContext<DataFlowContextState | null>(null)
+export const DataFlowContext = React.createContext<DataFlowContextState | null>(null)
 
 class DataSource {
   private sub = new Subject()
@@ -82,12 +82,4 @@ export default function DataFlowProvider({ children }: { children: React.ReactNo
     [getDataSource, removeDataSource, subscribe, unsubscribe],
   )
   return <DataFlowContext.Provider value={value}>{children}</DataFlowContext.Provider>
-}
-
-export function useDataFlowContext() {
-  const context = useContext(DataFlowContext)
-  if (!context) {
-    throw new Error("useDataFlowContext must be used within a SubscriptionProvider")
-  }
-  return context
 }

@@ -1,10 +1,10 @@
 import { Handle, NodeProps, Position } from "reactflow"
 import { isNil } from "lodash-es"
 import useNode from "../use-node"
-import { useDataFlowContext } from "../editor/context"
 import { Separator } from "@/components/ui/separator"
 import { Card, CardContent, CardHeader } from "@/components/ui/card"
 import { Badge } from "@/components/ui/badge"
+import { useDataFlowContext } from "../editor/user-data-flow-context"
 
 const Multiply = memo<NodeProps>(({ id, isConnectable, data }) => {
   const { getDataSource } = useDataFlowContext()

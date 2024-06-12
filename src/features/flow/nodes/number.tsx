@@ -1,9 +1,9 @@
 import { Handle, NodeProps, Position } from "reactflow"
 import useNode from "../use-node"
-import { useDataFlowContext } from "../editor/context"
 import { Separator } from "@/components/ui/separator"
 import { Input } from "@/components/ui/input"
 import { Card, CardContent, CardHeader } from "@/components/ui/card"
+import { useDataFlowContext } from "../editor/user-data-flow-context"
 
 const Number = memo<NodeProps>(({ id, isConnectable, data }) => {
   const [value, setValue] = useState(data.value)
