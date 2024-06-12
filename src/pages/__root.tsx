@@ -1,6 +1,5 @@
 import AuthContextProvider from "@/features/auth/auth-context"
 import { AXIOS_INSTANCE } from "@/lib/http"
-import time from "@/utils/time"
 import { useLogto } from "@logto/react"
 import { QueryClient, useQueries } from "@tanstack/react-query"
 import { Outlet, createRootRouteWithContext } from "@tanstack/react-router"
@@ -26,7 +25,6 @@ function Root() {
       {
         queryKey: ["access_token"],
         enabled: isAuthenticated,
-        refetchInterval: 10 * time.Second,
         queryFn: () => getAccessToken("http://flow.app.io"),
       },
     ],
