@@ -7,27 +7,28 @@ import { Input } from "@/components/ui/input"
 import Loading from "@/components/ui/loading"
 import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import { useToast } from "@/components/ui/use-toast"
-import { useAuth } from "@/features/auth/useAuth"
-import useAuthStore from "@/features/auth/useAuthStore"
+import { useAuthContext } from "@/features/auth/use-auth-context"
 import FlowList from "@/features/dashboard/flow-list"
 import { DEFAULT_FLOW_NAME } from "@/features/flow/config"
 import { extractErrorMessage } from "@/lib/http"
 import { delayedPromise } from "@/utils/promise"
 import time from "@/utils/time"
+import { useLogto } from "@logto/react"
 import { MagnifyingGlass, Plus, User } from "@phosphor-icons/react"
 import { useMutation } from "@tanstack/react-query"
 import { createFileRoute, redirect, useNavigate } from "@tanstack/react-router"
 
 export const Route = createFileRoute("/")({
-  beforeLoad: () => {
-    if (!useAuthStore.getState().isAuthenticated) throw redirect({ to: "/login" })
+  beforeLoad: ({ context: { isAuthenticated } }) => {
+    if (!isAuthenticated) throw redirect({ to: "/login" })
   },
   component: Home,
 })
 
 export default function Home() {
   const { toast } = useToast()
-  const { account, logout } = useAuth()
+  const { claim } = useAuthContext()
+  const { signOut } = useLogto()
   const navigate = useNavigate()
   const createFlowMutation = useMutation({
     mutationFn: delayedPromise(1 * time.Second, createFlow),
@@ -50,6 +51,10 @@ export default function Home() {
     })
   }
 
+  function onSignOut() {
+    signOut(new URL("/logout", window.origin).toString())
+  }
+
   return (
     <div className="flex flex-col h-screen">
       <div className="px-8">
@@ -57,16 +62,19 @@ export default function Home() {
           <h1>流程设计器</h1>
           <DropdownMenu>
             <DropdownMenuTrigger>
-              <Avatar className="cursor-pointer">
-                <AvatarImage className="object-cover" src={account?.picture || ""} />
-                <AvatarFallback>
-                  <User />
-                </AvatarFallback>
-              </Avatar>
+              <div className="flex items-center gap-2">
+                <Avatar className="cursor-pointer">
+                  <AvatarImage className="object-cover" src={claim?.picture || ""} />
+                  <AvatarFallback>
+                    <User />
+                  </AvatarFallback>
+                </Avatar>
+                <p className="text-sm text-neutral-500">{claim?.username}</p>
+              </div>
             </DropdownMenuTrigger>
             <DropdownMenuContent>
               <DropdownMenuItem>设置</DropdownMenuItem>
-              <DropdownMenuItem className="text-destructive" onClick={logout}>
+              <DropdownMenuItem className="text-destructive" onClick={onSignOut}>
                 注销
               </DropdownMenuItem>
             </DropdownMenuContent>

@@ -1,4 +1,3 @@
-import axios from "axios"
 import React from "react"
 
 async function installMockService() {
@@ -23,12 +22,7 @@ async function installWdyr() {
   }
 }
 
-async function configOpenApi() {
-  axios.defaults.baseURL = import.meta.env.VITE_API_PREFIX
-}
-
 export default async function setup() {
   await installWdyr()
   await installMockService()
-  await configOpenApi()
 }

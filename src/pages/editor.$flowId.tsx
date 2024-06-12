@@ -13,13 +13,16 @@ import { delayedPromise } from "@/utils/promise"
 import time from "@/utils/time"
 import { ArrowLeft, Plus } from "@phosphor-icons/react"
 import { useMutation, useQuery } from "@tanstack/react-query"
-import { createFileRoute, useNavigate } from "@tanstack/react-router"
+import { createFileRoute, redirect, useNavigate } from "@tanstack/react-router"
 import { isEmpty } from "lodash-es"
 import ReactFlow, { Background, BackgroundVariant, Controls, MarkerType, Panel, ReactFlowProvider } from "reactflow"
 
 const nodeTypes = getNodeTypes()
 
 export const Route = createFileRoute("/editor/$flowId")({
+  beforeLoad: ({ context: { isAuthenticated } }) => {
+    if (!isAuthenticated) throw redirect({ to: "/login" })
+  },
   component: FlowEditor,
 })
 

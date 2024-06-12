@@ -1,45 +1,11 @@
+import { useLogto } from "@logto/react"
 import { RouterProvider } from "@tanstack/react-router"
-import { useAuth } from "./features/auth/useAuth"
 import router from "./router"
-import { useToast } from "./components/ui/use-toast"
-import { QueryCache, QueryClient, QueryClientProvider } from "@tanstack/react-query"
 
 export default function App() {
-  const { toast } = useToast()
-  const queryClient = useMemo(
-    () =>
-      new QueryClient({
-        defaultOptions: {
-          queries: {
-            refetchOnWindowFocus: false,
-            retry: 3,
-          },
-        },
-        queryCache: new QueryCache({
-          onError: (error) => {
-            toast({
-              title: "Error",
-              description: error.message,
-              variant: "destructive",
-            })
-          },
-        }),
-      }),
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-    [],
-  )
+  const { isAuthenticated, isLoading } = useLogto()
 
-  return (
-    <QueryClientProvider client={queryClient}>
-      <RouterView />
-    </QueryClientProvider>
-  )
-}
+  if (isLoading && !isAuthenticated) return null
 
-function RouterView() {
-  const { isChecking, isAuthenticated, isLoadingToken, isLoadingClaim } = useAuth()
-
-  if (isChecking || isLoadingToken || (isAuthenticated && isLoadingClaim)) return null
-
-  return <RouterProvider router={router} />
+  return <RouterProvider router={router} context={{ isAuthenticated }} />
 }

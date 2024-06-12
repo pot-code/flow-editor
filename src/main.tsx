@@ -8,6 +8,8 @@ import setup from "./setup"
 import "reactflow/dist/style.css"
 import { Toaster } from "./components/ui/toaster"
 import "./styles/main.scss"
+import { QueryClientProvider } from "@tanstack/react-query"
+import client from "./lib/query/client"
 
 const root = createRoot(document.getElementById("root") as Element)
 
@@ -18,10 +20,12 @@ setup().then(() =>
         config={{
           endpoint: import.meta.env.VITE_LOGTO_ENDPOINT,
           appId: import.meta.env.VITE_LOGTO_APP_ID,
-          resources: ["http://flow-editor-server.com"],
+          resources: ["http://flow.app.io"],
         }}
       >
-        <App />
+        <QueryClientProvider client={client}>
+          <App />
+        </QueryClientProvider>
       </LogtoProvider>
       <Toaster />
     </React.StrictMode>,

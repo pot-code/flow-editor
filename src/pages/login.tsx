@@ -1,4 +1,4 @@
-import { useAuth } from "@/features/auth/useAuth"
+import { useLogto } from "@logto/react"
 import { createFileRoute } from "@tanstack/react-router"
 
 export const Route = createFileRoute("/login")({
@@ -6,7 +6,11 @@ export const Route = createFileRoute("/login")({
 })
 
 function Login() {
-  const { login } = useAuth()
-  login()
+  const { signIn } = useLogto()
+
+  useEffect(() => {
+    signIn(new URL("/callback", window.origin).toString())
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [])
   return null
 }
