@@ -1,4 +1,4 @@
-import { useLogto } from "@logto/react"
+import { useAuth } from "@/features/auth/useAuth"
 import { createFileRoute } from "@tanstack/react-router"
 
 export const Route = createFileRoute("/login")({
@@ -6,7 +6,7 @@ export const Route = createFileRoute("/login")({
 })
 
 function Login() {
-  const { signIn } = useLogto()
-  signIn("http://localhost:5173/callback")
+  const { login } = useAuth()
+  login()
   return null
 }

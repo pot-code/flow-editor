@@ -37,9 +37,9 @@ export default function App() {
 }
 
 function RouterView() {
-  const { isChecking, isAuthenticated, isLoadingToken } = useAuth()
+  const { isChecking, isAuthenticated, isLoadingToken, isLoadingClaim } = useAuth()
 
-  if (isChecking || (isAuthenticated && isLoadingToken)) return null
+  if (isChecking || isLoadingToken || (isAuthenticated && isLoadingClaim)) return null
 
   return <RouterProvider router={router} />
 }
