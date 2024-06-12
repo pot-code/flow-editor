@@ -31,16 +31,11 @@ function Root() {
   })
   const [claim, accessToken] = results
 
-  useEffect(() => {
-    const { data, isSuccess } = accessToken
-    if (isSuccess && data) {
-      AXIOS_INSTANCE.defaults.headers.common["Authorization"] = `Bearer ${data}`
-    }
-  }, [accessToken])
-
   if (isAuthenticated && results.some((result) => result.isLoading)) {
     return null
   }
+
+  AXIOS_INSTANCE.defaults.headers.common["Authorization"] = `Bearer ${accessToken.data}`
 
   return (
     <AuthContextProvider data={{ claim: claim.data }}>
