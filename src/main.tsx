@@ -1,6 +1,6 @@
+import { LogtoProvider } from "@logto/react"
 import React from "react"
 import { createRoot } from "react-dom/client"
-import { LogtoProvider } from "@logto/react"
 
 import App from "./app"
 import setup from "./setup"
@@ -8,8 +8,6 @@ import setup from "./setup"
 import "reactflow/dist/style.css"
 import { Toaster } from "./components/ui/toaster"
 import "./styles/main.scss"
-import { QueryClientProvider } from "@tanstack/react-query"
-import client from "./lib/query/client"
 
 const root = createRoot(document.getElementById("root") as Element)
 
@@ -23,9 +21,7 @@ setup().then(() =>
           resources: ["http://flow.app.io"],
         }}
       >
-        <QueryClientProvider client={client}>
-          <App />
-        </QueryClientProvider>
+        <App />
       </LogtoProvider>
       <Toaster />
     </React.StrictMode>,
