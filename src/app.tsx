@@ -5,7 +5,6 @@ import { useToast } from "./components/ui/use-toast"
 import { QueryCache, QueryClient, QueryClientProvider } from "@tanstack/react-query"
 
 export default function App() {
-  const { isLoading } = useAuth()
   const { toast } = useToast()
   const queryClient = useMemo(
     () =>
@@ -30,11 +29,17 @@ export default function App() {
     [],
   )
 
-  if (isLoading) return null
-
   return (
     <QueryClientProvider client={queryClient}>
-      <RouterProvider router={router} />
+      <RouterView />
     </QueryClientProvider>
   )
+}
+
+function RouterView() {
+  const { isChecking, isAuthenticated, isLoadingToken } = useAuth()
+
+  if (isChecking || (isAuthenticated && isLoadingToken)) return null
+
+  return <RouterProvider router={router} />
 }

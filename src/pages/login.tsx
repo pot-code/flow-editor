@@ -1,9 +1,12 @@
-import zitadel from "@/lib/auth/zitadel"
+import { useLogto } from "@logto/react"
 import { createFileRoute } from "@tanstack/react-router"
 
 export const Route = createFileRoute("/login")({
-  onEnter: () => {
-    zitadel.authorize()
-  },
-  component: () => null,
+  component: Login,
 })
+
+function Login() {
+  const { signIn } = useLogto()
+  signIn("http://localhost:5173/callback")
+  return null
+}

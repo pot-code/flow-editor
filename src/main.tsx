@@ -1,5 +1,6 @@
 import React from "react"
 import { createRoot } from "react-dom/client"
+import { LogtoProvider } from "@logto/react"
 
 import App from "./app"
 import setup from "./setup"
@@ -13,7 +14,15 @@ const root = createRoot(document.getElementById("root") as Element)
 setup().then(() =>
   root.render(
     <React.StrictMode>
-      <App />
+      <LogtoProvider
+        config={{
+          endpoint: import.meta.env.VITE_LOGTO_ENDPOINT,
+          appId: import.meta.env.VITE_LOGTO_APP_ID,
+          resources: ["http://flow-editor-server.com"],
+        }}
+      >
+        <App />
+      </LogtoProvider>
       <Toaster />
     </React.StrictMode>,
   ),

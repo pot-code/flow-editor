@@ -1,22 +1,6 @@
 import Axios, { AxiosError, AxiosRequestConfig } from "axios"
-import zitadel from "../auth/zitadel"
 
 export const AXIOS_INSTANCE = Axios.create({ baseURL: import.meta.env.VITE_API_PREFIX }) // use your own URL here or environment variable
-
-AXIOS_INSTANCE.interceptors.response.use(
-  (response) => response,
-  (error) => {
-    if (Axios.isCancel(error)) {
-      return
-    }
-
-    const { response } = error
-    if (response && response.status === 401) {
-      return zitadel.userManager.signinSilent()
-    }
-    return Promise.reject(error)
-  },
-)
 
 // add a second `options` argument here if you want to pass extra options to each generated query
 export const customInstance = <T>(config: AxiosRequestConfig, options?: AxiosRequestConfig): Promise<T> => {

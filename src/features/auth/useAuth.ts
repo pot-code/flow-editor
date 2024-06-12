@@ -1,32 +1,35 @@
-import { isNil } from "lodash-es"
-import { setAccessToken, setIsAuthenticated, setUser } from "./useAuthStore"
-import { getAccount } from "@/api/account"
-import zitadel from "@/lib/auth/zitadel"
+import { useLogto } from "@logto/react"
+import { useQuery } from "@tanstack/react-query"
+import { setAccessToken, setIsAuthenticated } from "./useAuthStore"
 
 export function useAuth() {
-  const [isLoading, setIsLoading] = useState(true)
+  const [isLoadingToken, setIsLoadingToken] = useState(true)
+  const { isAuthenticated, getIdTokenClaims, getAccessToken, isLoading: isChecking, signIn } = useLogto()
+  const { data, isSuccess } = useQuery({
+    queryKey: ["auth"],
+    enabled: isAuthenticated,
+    queryFn: () => getIdTokenClaims(),
+  })
+
+  function login() {
+    signIn(new URL("/callback", window.location.origin).toString())
+  }
 
   useEffect(() => {
-    zitadel.userManager
-      .getUser()
-      .then(async (user) => {
-        setIsAuthenticated(!isNil(user))
-
-        if (!isNil(user)) {
-          setAccessToken(user.access_token)
-          const account = await getAccount()
-          setUser({
-            name: user.profile.name,
-            avatar: user.profile.picture,
-            ...account,
-          })
-        }
-      })
-      .finally(() => setIsLoading(false))
+    if (isSuccess && isAuthenticated) {
+      getAccessToken("http://flow-editor-server.com")
+        .then((t) => {
+          if (!t) return
+          setAccessToken(t)
+        })
+        .finally(() => setIsLoadingToken(false))
+    }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [])
+  }, [isAuthenticated, isSuccess])
 
-  return {
-    isLoading,
-  }
+  useEffect(() => {
+    setIsAuthenticated(isAuthenticated)
+  }, [isAuthenticated])
+
+  return { isChecking, isLoadingToken, isAuthenticated, account: data, login }
 }

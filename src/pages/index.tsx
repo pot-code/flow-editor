@@ -7,13 +7,14 @@ import { Input } from "@/components/ui/input"
 import Loading from "@/components/ui/loading"
 import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import { useToast } from "@/components/ui/use-toast"
+import { useAuth } from "@/features/auth/useAuth"
 import useAuthStore from "@/features/auth/useAuthStore"
 import FlowList from "@/features/dashboard/flow-list"
 import { DEFAULT_FLOW_NAME } from "@/features/flow/config"
-import zitadel from "@/lib/auth/zitadel"
 import { extractErrorMessage } from "@/lib/http"
 import { delayedPromise } from "@/utils/promise"
 import time from "@/utils/time"
+import { useLogto } from "@logto/react"
 import { MagnifyingGlass, Plus, User } from "@phosphor-icons/react"
 import { useMutation } from "@tanstack/react-query"
 import { createFileRoute, redirect, useNavigate } from "@tanstack/react-router"
@@ -27,7 +28,8 @@ export const Route = createFileRoute("/")({
 
 export default function Home() {
   const { toast } = useToast()
-  const { avatar, name } = useAuthStore((state) => state.user)
+  const { signOut } = useLogto()
+  const { account } = useAuth()
   const navigate = useNavigate()
   const createFlowMutation = useMutation({
     mutationFn: delayedPromise(1 * time.Second, createFlow),
@@ -51,7 +53,7 @@ export default function Home() {
   }
 
   function onLogout() {
-    zitadel.signout()
+    signOut("http://localhost:5173/login")
   }
 
   return (
@@ -62,7 +64,7 @@ export default function Home() {
           <DropdownMenu>
             <DropdownMenuTrigger>
               <Avatar className="cursor-pointer">
-                <AvatarImage className="object-cover" src={avatar} />
+                <AvatarImage className="object-cover" src={account?.picture || ""} />
                 <AvatarFallback>
                   <User />
                 </AvatarFallback>

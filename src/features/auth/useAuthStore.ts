@@ -1,10 +1,9 @@
 import { AXIOS_INSTANCE } from "@/lib/http/instance"
-import { isNil } from "lodash-es"
 import { create } from "zustand"
 
 type User = {
-  name?: string
-  avatar?: string
+  name: string | null | undefined
+  avatar: string | null | undefined
   membership: number
   activated: boolean
 }
@@ -21,6 +20,8 @@ const useAuthStore = create<State>(() => ({
   user: {
     membership: 0,
     activated: false,
+    avatar: "",
+    name: "",
   },
 }))
 
