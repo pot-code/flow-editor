@@ -7,8 +7,9 @@ import { defineConfig } from "vite"
 import path from "node:path"
 
 const cdn = {
-  react: "https://esm.sh/react@18.2.0",
-  "react-dom": "https://esm.sh/react-dom@18.2.0",
+  react: "https://esm.sh/react@^18.2.0",
+  "react-dom": "https://esm.sh/react-dom@^18.2.0",
+  "framer-motion": "https://esm.sh/framer-motion@^11.2.10",
 }
 
 export default defineConfig(({ mode }) => ({

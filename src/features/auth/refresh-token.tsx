@@ -1,8 +1,8 @@
-import { AXIOS_INSTANCE, errorEvent } from "@/lib/http"
+import { AXIOS_INSTANCE, httpErrorStream } from "@/lib/http"
 import { useLogto } from "@logto/react"
 import { useQuery } from "@tanstack/react-query"
 import axios from "axios"
-import { debounce } from "lodash-es"
+import { debounceTime } from "rxjs"
 
 export default function RefreshToken() {
   const { isAuthenticated, getAccessToken } = useLogto()
@@ -11,16 +11,14 @@ export default function RefreshToken() {
     enabled: isAuthenticated,
     queryFn: () => getAccessToken(import.meta.env.VITE_LOGTO_API_RESOURCE),
   })
-  const debouncedRefetch = useCallback(() => debounce(refetch, 200), [refetch])
 
   useEffect(() => {
-    const sub = (e: Error) => {
-      if (axios.isAxiosError(e) && e.status === 401) {
-        debouncedRefetch()
+    const sub = httpErrorStream.pipe(debounceTime(200)).subscribe((err) => {
+      if (axios.isAxiosError(err) && err.status === 401) {
+        refetch()
       }
-    }
-    errorEvent.on("error", sub)
-    return () => errorEvent.off("error", sub)
+    })
+    return () => sub.unsubscribe()
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [data])
 

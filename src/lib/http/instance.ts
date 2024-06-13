@@ -1,12 +1,12 @@
 import Axios, { AxiosError, AxiosRequestConfig } from "axios"
-import { errorEvent } from "./error"
+import { httpErrorStream } from "./error"
 
 export const AXIOS_INSTANCE = Axios.create({ baseURL: import.meta.env.VITE_API_PREFIX }) // use your own URL here or environment variable
 
 AXIOS_INSTANCE.interceptors.response.use(
   (response) => response,
   (error) => {
-    errorEvent.emit("error", error)
+    httpErrorStream.next(error)
     return Promise.reject(error)
   },
 )
