@@ -1,6 +1,15 @@
 import Axios, { AxiosError, AxiosRequestConfig } from "axios"
+import { errorEvent } from "./error"
 
 export const AXIOS_INSTANCE = Axios.create({ baseURL: import.meta.env.VITE_API_PREFIX }) // use your own URL here or environment variable
+
+AXIOS_INSTANCE.interceptors.response.use(
+  (response) => response,
+  (error) => {
+    errorEvent.emit("error", error)
+    return Promise.reject(error)
+  },
+)
 
 // add a second `options` argument here if you want to pass extra options to each generated query
 export const customInstance = <T>(config: AxiosRequestConfig, options?: AxiosRequestConfig): Promise<T> => {

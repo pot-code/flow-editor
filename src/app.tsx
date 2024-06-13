@@ -3,6 +3,7 @@ import { RouterProvider } from "@tanstack/react-router"
 import router from "./router"
 import { QueryCache, QueryClient, QueryClientProvider } from "@tanstack/react-query"
 import { useToast } from "./components/ui/use-toast"
+import RefreshToken from "./features/auth/refresh-token"
 
 export default function App() {
   const { isAuthenticated, isLoading } = useLogto()
@@ -13,7 +14,6 @@ export default function App() {
         defaultOptions: {
           queries: {
             refetchOnWindowFocus: false,
-            retry: 3,
           },
         },
         queryCache: new QueryCache({
@@ -35,6 +35,7 @@ export default function App() {
   return (
     <QueryClientProvider client={queryClient}>
       <RouterProvider router={router} context={{ isAuthenticated, queryClient }} />
+      <RefreshToken />
     </QueryClientProvider>
   )
 }

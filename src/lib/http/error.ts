@@ -1,4 +1,5 @@
 import axios from "axios"
+import mitt from "mitt"
 
 export function extractErrorMessage(error: Error) {
   if (!axios.isAxiosError<HttpErrorData>(error)) {
@@ -11,3 +12,5 @@ export function extractErrorMessage(error: Error) {
 
   return error.message
 }
+
+export const errorEvent = mitt<{ error: Error }>()

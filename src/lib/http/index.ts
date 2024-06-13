@@ -1,2 +1,2 @@
 export { AXIOS_INSTANCE, customInstance } from "./instance"
-export { extractErrorMessage } from "./error"
+export { extractErrorMessage, errorEvent } from "./error"

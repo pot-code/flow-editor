@@ -18,7 +18,7 @@ setup().then(() =>
         config={{
           endpoint: import.meta.env.VITE_LOGTO_ENDPOINT,
           appId: import.meta.env.VITE_LOGTO_APP_ID,
-          resources: ["http://flow.app.io"],
+          resources: [import.meta.env.VITE_LOGTO_API_RESOURCE],
         }}
       >
         <App />

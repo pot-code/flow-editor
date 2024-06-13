@@ -7,7 +7,7 @@ import { Input } from "@/components/ui/input"
 import Loading from "@/components/ui/loading"
 import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import { useToast } from "@/components/ui/use-toast"
-import { useAuthContext } from "@/features/auth/use-auth-context"
+import useTokenClaim from "@/features/auth/use-token-claim"
 import FlowList from "@/features/dashboard/flow-list"
 import { DEFAULT_FLOW_NAME } from "@/features/flow/config"
 import { extractErrorMessage } from "@/lib/http"
@@ -27,7 +27,7 @@ export const Route = createFileRoute("/")({
 
 export default function Home() {
   const { toast } = useToast()
-  const { claim } = useAuthContext()
+  const { data: claim } = useTokenClaim()
   const { signOut } = useLogto()
   const navigate = useNavigate()
   const createFlowMutation = useMutation({
