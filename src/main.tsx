@@ -34,7 +34,7 @@ setup().then(() =>
           <TanStackRouterDevtools router={router} />
         </QueryClientProvider>
       </LogtoProvider>
-      <Toaster />
+      <Toaster richColors toastOptions={{ closeButton: true }} />
     </React.StrictMode>,
   ),
 )
