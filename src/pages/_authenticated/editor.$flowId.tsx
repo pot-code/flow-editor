@@ -2,7 +2,6 @@ import { getFlow, updateFlow } from "@/api/flow"
 import { Button } from "@/components/ui/button"
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from "@/components/ui/dropdown-menu"
 import Loading from "@/components/ui/loading"
-import { useToast } from "@/components/ui/use-toast"
 import { DEFAULT_FLOW_NAME } from "@/features/flow/config"
 import DataFlowProvider from "@/features/flow/editor/context"
 import NameInput from "@/features/flow/editor/name-input"
@@ -16,20 +15,21 @@ import { useMutation, useQuery } from "@tanstack/react-query"
 import { createFileRoute, useNavigate } from "@tanstack/react-router"
 import { isEmpty } from "lodash-es"
 import ReactFlow, { Background, BackgroundVariant, Controls, MarkerType, Panel, ReactFlowProvider } from "reactflow"
+import { toast } from "sonner"
 
 const nodeTypes = getNodeTypes()
 
 export const Route = createFileRoute("/_authenticated/editor/$flowId")({
   component: FlowEditor,
+  onLeave: ({ context: { queryClient } }) => queryClient.invalidateQueries({ queryKey: ["flow"] }),
 })
 
 function FlowEditor() {
-  const { toast } = useToast()
   const navigate = useNavigate()
   const { nodes, edges, setEdges, setNodes, onNodesChange, onEdgesChange, onConnect, onAddNode } = useGraph()
 
   const flowId = Route.useParams().flowId
-  const [graphName, setGraphName] = useState("")
+  const [title, setTitle] = useState("")
 
   const { data, isLoading } = useQuery({
     queryKey: ["flow", flowId],
@@ -37,13 +37,12 @@ function FlowEditor() {
   })
 
   const updateFlowMutation = useMutation({
-    mutationFn: delayedPromise(0.5 * time.Second, ({ id, data }) => updateFlow(id, data)),
+    mutationFn: delayedPromise(0.5 * time.Second, (data) => updateFlow(flowId, data)),
     onSuccess: () => {
-      toast({ title: "保存成功" })
+      toast.success("保存成功")
     },
     onError: (err) => {
-      toast({
-        title: "保存失败",
+      toast.error("保存失败", {
         description: extractErrorMessage(err),
       })
     },
@@ -52,26 +51,23 @@ function FlowEditor() {
   function onSave() {
     if (nodes && edges) {
       updateFlowMutation.mutate({
-        id: flowId,
-        data: {
-          nodes: JSON.stringify(nodes),
-          edges: JSON.stringify(edges),
-          title: graphName,
-        },
+        nodes: JSON.stringify(nodes),
+        edges: JSON.stringify(edges),
+        title: title,
       })
     }
   }
 
   function onChangeGraphName(name: string) {
-    if (isEmpty(name)) setGraphName(DEFAULT_FLOW_NAME)
-    else setGraphName(name)
+    if (isEmpty(name)) setTitle(DEFAULT_FLOW_NAME)
+    else setTitle(name)
   }
 
   useEffect(() => {
     if (data) {
       if (data.nodes) setNodes(JSON.parse(data.nodes))
       if (data.edges) setEdges(JSON.parse(data.edges))
-      setGraphName(data.title)
+      setTitle(data.title)
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [data])
@@ -82,7 +78,7 @@ function FlowEditor() {
         <Button variant="ghost" size="icon" onClick={() => navigate({ to: "/" })}>
           <ArrowLeft />
         </Button>
-        <NameInput value={graphName} onChange={onChangeGraphName} />
+        <NameInput value={title} onChange={onChangeGraphName} />
         <div>
           <Button size="sm" variant="ghost" onClick={onSave}>
             保存

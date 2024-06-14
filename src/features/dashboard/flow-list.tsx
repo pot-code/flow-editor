@@ -2,7 +2,6 @@ import { copyFlow, deleteFlow, getFlowList } from "@/api/flow"
 import { Card, CardHeader } from "@/components/ui/card"
 import Loading from "@/components/ui/loading"
 import { Skeleton } from "@/components/ui/skeleton"
-import { useToast } from "@/components/ui/use-toast"
 import { extractErrorMessage } from "@/lib/http"
 import { delayedPromise } from "@/utils/promise"
 import time from "@/utils/time"
@@ -10,6 +9,7 @@ import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query"
 import { useNavigate } from "@tanstack/react-router"
 import { isEmpty } from "lodash-es"
 import FlowCard from "./flow-card"
+import { toast } from "sonner"
 
 function GridLayout({ children }: { children: React.ReactNode }) {
   return <div className="grid grid-cols-5 monitor-2k:grid-cols-6 monitor-4k:grid-cols-8 gap-4">{children}</div>
@@ -37,7 +37,6 @@ function EmptyData() {
 }
 
 export default function FlowList() {
-  const { toast } = useToast()
   const navigate = useNavigate()
   const qc = useQueryClient()
   const { isLoading, data } = useQuery({
@@ -47,14 +46,13 @@ export default function FlowList() {
   const deleteFlowMutation = useMutation({
     mutationFn: delayedPromise(0.5 * time.Second, deleteFlow),
     onSuccess: () => {
-      toast({ title: "删除成功" })
+      toast.success("删除成功")
       qc.invalidateQueries({
         queryKey: ["flow", "list"],
       })
     },
     onError: (err) => {
-      toast({
-        title: "删除失败",
+      toast.error("删除失败", {
         description: extractErrorMessage(err),
       })
     },
@@ -62,14 +60,13 @@ export default function FlowList() {
   const copyFlowMutation = useMutation({
     mutationFn: delayedPromise(0.5 * time.Second, copyFlow),
     onSuccess: () => {
-      toast({ title: "复制成功" })
+      toast("复制成功")
       qc.invalidateQueries({
         queryKey: ["flow", "list"],
       })
     },
     onError: (err: Error) => {
-      toast({
-        title: "复制失败",
+      toast("复制失败", {
         description: extractErrorMessage(err),
       })
     },

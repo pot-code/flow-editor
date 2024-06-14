@@ -6,7 +6,6 @@ import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigge
 import { Input } from "@/components/ui/input"
 import Loading from "@/components/ui/loading"
 import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs"
-import { useToast } from "@/components/ui/use-toast"
 import useTokenClaim from "@/features/auth/use-token-claim"
 import FlowList from "@/features/dashboard/flow-list"
 import { DEFAULT_FLOW_NAME } from "@/features/flow/config"
@@ -17,13 +16,13 @@ import { useLogto } from "@logto/react"
 import { MagnifyingGlass, Plus, User } from "@phosphor-icons/react"
 import { useMutation } from "@tanstack/react-query"
 import { createFileRoute, useNavigate } from "@tanstack/react-router"
+import { toast } from "sonner"
 
 export const Route = createFileRoute("/_authenticated/")({
   component: Home,
 })
 
 export default function Home() {
-  const { toast } = useToast()
   const { data: claim } = useTokenClaim()
   const { signOut } = useLogto()
   const navigate = useNavigate()
@@ -35,8 +34,7 @@ export default function Home() {
       })
     },
     onError: (err) => {
-      toast({
-        title: "创建失败",
+      toast.error("创建失败", {
         description: extractErrorMessage(err),
       })
     },
