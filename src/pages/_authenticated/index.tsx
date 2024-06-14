@@ -16,12 +16,9 @@ import time from "@/utils/time"
 import { useLogto } from "@logto/react"
 import { MagnifyingGlass, Plus, User } from "@phosphor-icons/react"
 import { useMutation } from "@tanstack/react-query"
-import { createFileRoute, redirect, useNavigate } from "@tanstack/react-router"
+import { createFileRoute, useNavigate } from "@tanstack/react-router"
 
-export const Route = createFileRoute("/")({
-  beforeLoad: ({ context: { isAuthenticated } }) => {
-    if (!isAuthenticated) throw redirect({ to: "/login" })
-  },
+export const Route = createFileRoute("/_authenticated/")({
   component: Home,
 })
 

@@ -1,12 +1,10 @@
-import { useLogto } from "@logto/react"
-import { RouterProvider } from "@tanstack/react-router"
-import router from "./router"
 import { QueryCache, QueryClient, QueryClientProvider } from "@tanstack/react-query"
+import { RouterProvider } from "@tanstack/react-router"
 import { useToast } from "./components/ui/use-toast"
 import RefreshToken from "./features/auth/refresh-token"
+import router from "./router"
 
 export default function App() {
-  const { isAuthenticated, isLoading } = useLogto()
   const { toast } = useToast()
   const queryClient = useMemo(
     () =>
@@ -30,11 +28,9 @@ export default function App() {
     [],
   )
 
-  if (isLoading && !isAuthenticated) return null
-
   return (
     <QueryClientProvider client={queryClient}>
-      <RouterProvider router={router} context={{ isAuthenticated, queryClient }} />
+      <RouterProvider router={router} context={{ queryClient }} />
       <RefreshToken />
     </QueryClientProvider>
   )
