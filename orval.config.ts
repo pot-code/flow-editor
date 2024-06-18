@@ -8,7 +8,7 @@ export default defineConfig(
       name,
       {
         input: {
-          target: "http://127.0.0.1:3001/openapi.json",
+          target: "http://127.0.0.1:8082/openapi.json",
           filters: {
             tags: [name],
           },

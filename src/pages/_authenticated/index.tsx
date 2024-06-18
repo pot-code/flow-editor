@@ -5,7 +5,6 @@ import { Button } from "@/components/ui/button"
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from "@/components/ui/dropdown-menu"
 import { Input } from "@/components/ui/input"
 import Loading from "@/components/ui/loading"
-import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import useTokenClaim from "@/features/auth/use-token-claim"
 import FlowList from "@/features/dashboard/flow-list"
 import { DEFAULT_FLOW_NAME } from "@/features/flow/config"
@@ -17,12 +16,15 @@ import { MagnifyingGlass, Plus, User } from "@phosphor-icons/react"
 import { useMutation } from "@tanstack/react-query"
 import { createFileRoute, useNavigate } from "@tanstack/react-router"
 import { toast } from "sonner"
+import { useForm } from "react-hook-form"
 
 export const Route = createFileRoute("/_authenticated/")({
   component: Home,
 })
 
 export default function Home() {
+  const [searchName, setSearchName] = useState("")
+  const { register, handleSubmit } = useForm()
   const { data: claim } = useTokenClaim()
   const { signOut } = useLogto()
   const navigate = useNavigate()
@@ -86,20 +88,14 @@ export default function Home() {
               <Plus className="mr-2" />
               新建流程
             </Button>
-            <div className="flex gap-2">
-              <Tabs defaultValue="grid">
-                <TabsList>
-                  <TabsTrigger value="grid">宫格</TabsTrigger>
-                  <TabsTrigger value="list">列表</TabsTrigger>
-                </TabsList>
-              </Tabs>
-              <Input />
-              <Button className="flex-shrink-0" variant="secondary" size="icon">
+            <form onSubmit={handleSubmit((data) => setSearchName(data.search))} className="flex gap-2">
+              <Input placeholder="搜索流程" {...register("search")} />
+              <Button className="flex-shrink-0" variant="secondary" size="icon" type="submit">
                 <MagnifyingGlass />
               </Button>
-            </div>
+            </form>
           </section>
-          <FlowList />
+          <FlowList searchName={searchName} />
         </div>
       </main>
       <Loading title="创建中" loading={createFlowMutation.isPending} />

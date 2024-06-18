@@ -5,9 +5,9 @@
  * OpenAPI spec version: 0.0.1
  */
 
-export interface AccountInfo {
-  activated: boolean
-  membership: number
-  roles: string[]
-  user_id: string
+export type GetFlowListParams = {
+  /**
+   * 流程名
+   */
+  name?: string
 }

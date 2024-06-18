@@ -36,12 +36,22 @@ function EmptyData() {
   return <p className="text-center text-foreground-500">No Data</p>
 }
 
-export default function FlowList() {
+type FlowLisProps = {
+  searchName: string
+}
+
+export default function FlowList({ searchName }: FlowLisProps) {
   const navigate = useNavigate()
   const qc = useQueryClient()
   const { isLoading, data } = useQuery({
-    queryKey: ["flow", "list"],
-    queryFn: delayedPromise(0.3 * time.Second, getFlowList),
+    queryKey: ["flow", "list", searchName],
+    queryFn: ({ queryKey }) =>
+      delayedPromise(
+        0.3 * time.Second,
+        getFlowList,
+      )({
+        name: queryKey[2] as string,
+      }),
   })
   const deleteFlowMutation = useMutation({
     mutationFn: delayedPromise(0.5 * time.Second, deleteFlow),
@@ -60,13 +70,13 @@ export default function FlowList() {
   const copyFlowMutation = useMutation({
     mutationFn: delayedPromise(0.5 * time.Second, copyFlow),
     onSuccess: () => {
-      toast("复制成功")
+      toast.success("复制成功")
       qc.invalidateQueries({
         queryKey: ["flow", "list"],
       })
     },
     onError: (err: Error) => {
-      toast("复制失败", {
+      toast.error("复制失败", {
         description: extractErrorMessage(err),
       })
     },
@@ -95,7 +105,7 @@ export default function FlowList() {
   }
 
   return (
-    <>
+    <div>
       <GridLayout>
         {data?.map((item) => (
           <FlowCard
@@ -111,6 +121,6 @@ export default function FlowList() {
       </GridLayout>
       <Loading title="删除中..." loading={deleteFlowMutation.isPending} />
       <Loading title="复制中..." loading={copyFlowMutation.isPending} />
-    </>
+    </div>
   )
 }
