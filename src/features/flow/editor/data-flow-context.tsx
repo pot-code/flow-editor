@@ -2,12 +2,18 @@ import React from "react"
 import { Subject, Unsubscribable } from "rxjs"
 
 interface DataFlowContextState {
-  createSource: (id: string) => DataSource
   removeSource: (id: string) => void
-  getSource: (channelId: string) => DataSource | undefined
+  getSource: (channelId: string) => DataSource
 }
 
 export const DataFlowContext = React.createContext<DataFlowContextState>(null!)
+
+export type DataConnection = {
+  source?: string | null
+  target?: string | null
+  sourceHandle?: string | null
+  targetHandle?: string | null
+}
 
 class DataSource {
   private sub = new Subject()
@@ -18,17 +24,22 @@ class DataSource {
     this.sub.next(data)
   }
 
-  subscribe(id: string, fn: (data: any) => void) {
-    this.subscriptions.set(id, this.sub.subscribe(fn))
+  subscribe(c: DataConnection, cb: (data: any) => void) {
+    const key = this.getConnectionKey(c)
+    this.subscriptions.set(key, this.sub.subscribe(cb))
   }
 
-  unsubscribe(id: string) {
-    this.subscriptions.get(id)?.unsubscribe()
-    this.subscriptions.delete(id)
+  unsubscribe(c: DataConnection) {
+    const key = this.getConnectionKey(c)
+    this.subscriptions.get(key)?.unsubscribe()
   }
 
   dispose() {
     this.subscriptions.forEach((sub) => sub.unsubscribe())
+  }
+
+  private getConnectionKey(c: DataConnection) {
+    return `${c.source}:${c.sourceHandle}->${c.target}:${c.targetHandle}`
   }
 }
 
@@ -43,21 +54,16 @@ export default function DataFlowProvider({ children }: { children: React.ReactNo
     [channelMap],
   )
 
-  const createSource = useCallback(
-    (id: string) => {
-      let dataSource = channelMap.current.get(id)
-      if (!dataSource) {
-        dataSource = new DataSource()
-        channelMap.current.set(id, dataSource)
-      }
-      return dataSource
-    },
-    [channelMap],
-  )
+  const getSource = useCallback((source: string) => {
+    let dataSource = channelMap.current.get(source)
+    if (!dataSource) {
+      dataSource = new DataSource()
+      channelMap.current.set(source, dataSource)
+    }
+    return dataSource
+  }, [])
 
-  const getSource = useCallback((channelId: string) => channelMap.current.get(channelId), [channelMap])
-
-  const value = useMemo(() => ({ createSource, removeSource, getSource }), [createSource, removeSource, getSource])
+  const value = useMemo(() => ({ removeSource, getSource }), [removeSource, getSource])
 
   useEffect(() => {
     const c = channelMap.current

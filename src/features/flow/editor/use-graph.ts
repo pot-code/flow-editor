@@ -1,52 +1,84 @@
 import { produce } from "immer"
-import { Connection, Node, ReactFlowInstance, addEdge, useEdgesState, useNodesState } from "reactflow"
+import { Connection, Edge, Node, ReactFlowInstance, addEdge, useEdgesState, useNodesState } from "reactflow"
+import { DataConnection } from "./data-flow-context"
+import { useDataFlowContext } from "./use-data-flow-context"
 
 export default function useGraph() {
   const instanceRef = useRef<ReactFlowInstance>()
   const [nodes, setNodes, onNodesChange] = useNodesState([])
   const [edges, setEdges, onEdgesChange] = useEdgesState([])
+  const { getSource, removeSource } = useDataFlowContext()
 
-  const onConnect = useCallback((params: Connection) => setEdges((eds) => addEdge(params, eds)), [setEdges])
+  const addConnection = useCallback(
+    (c: DataConnection) => {
+      const source = getSource(c.source!)
+      source.subscribe(c, (data) => {
+        setNodes(
+          produce((draft) => {
+            draft
+              .filter((node) => node.id === c.source)
+              .forEach((node) => {
+                node.data[c.sourceHandle!] = data
+              })
+            draft
+              .filter((node) => node.id === c.target)
+              .forEach((node) => {
+                node.data[c.targetHandle!] = data
+              })
+          }),
+        )
+      })
+    },
+    [getSource, setNodes],
+  )
 
-  // function addConnection(c: Connection) {
-  //   const source = createSource(c.source!)
+  const removeConnection = useCallback(
+    (c: DataConnection) => {
+      setNodes(
+        produce((draft) => {
+          draft
+            .filter((node) => node.id === c.source)
+            .forEach((node) => {
+              delete node.data[c.sourceHandle!]
+            })
+          draft
+            .filter((node) => node.id === c.target)
+            .forEach((node) => {
+              delete node.data[c.targetHandle!]
+            })
+        }),
+      )
+      const source = getSource(c.source!)
+      source.unsubscribe(c)
+    },
+    [getSource, setNodes],
+  )
 
-  //   source.subscribe(c.id, (data) => {
-  //     setNodes(
-  //       produce((draft) => {
-  //         draft
-  //           .filter((n) => n.id === edge.target)
-  //           .forEach((n) => {
-  //             n.data[edge.targetHandle!] = data
-  //           })
-  //         draft
-  //           .filter((n) => n.id === edge.source)
-  //           .forEach((n) => {
-  //             n.data[edge.sourceHandle!] = data
-  //           })
-  //       }),
-  //     )
-  //   })
-  // }
+  const onConnect = useCallback(
+    (params: Connection) => {
+      setEdges((eds) => addEdge(params, eds))
+      addConnection(params)
+    },
+    [addConnection, setEdges],
+  )
 
-  // function removeConnection(id: string) {
-  //   const edge = instanceRef.current?.getEdge(id)
-  //   if (!edge) return
+  const onNodesDelete = useCallback(
+    (nodes: Node[]) => {
+      nodes.forEach((node) => {
+        removeSource(node.id)
+      })
+    },
+    [removeSource],
+  )
 
-  //   const source = getSource(edge.source)
-  //   if (!source) return
-
-  //   source.unsubscribe(edge.id)
-  //   setNodes(
-  //     produce((draft) =>
-  //       draft
-  //         .filter((n) => n.id === edge.target)
-  //         .forEach((n) => {
-  //           n.data[edge.targetHandle!] = undefined
-  //         }),
-  //     ),
-  //   )
-  // }
+  const onEdgesDelete = useCallback(
+    (edges: Edge[]) => {
+      edges.forEach((edge) => {
+        removeConnection(edge)
+      })
+    },
+    [removeConnection],
+  )
 
   // TODO: use DnD
   function addNode(nodeType: string) {
@@ -74,9 +106,13 @@ export default function useGraph() {
     setEdges,
     setNodes,
     onNodesChange,
+    onNodesDelete,
     onEdgesChange,
+    onEdgesDelete,
     onConnect,
     addNode,
+    addConnection,
+    removeConnection,
     setInstance,
   }
 }

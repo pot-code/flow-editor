@@ -14,19 +14,23 @@ export type FlowGraphHandle = {
   getFlowData: () => ReactFlowJsonObject<any, any> | undefined
 }
 
+const nodeTypes = getNodeTypes()
+
 const FlowGraph = forwardRef<FlowGraphHandle, FlowGraphProps>(({ data }, ref) => {
-  const nodeTypes = useMemo(() => getNodeTypes(), [])
   const {
     nodes,
     edges,
     instanceRef,
+    addNode,
+    addConnection,
+    setInstance,
     setEdges,
     setNodes,
     onNodesChange,
+    onNodesDelete,
     onEdgesChange,
+    onEdgesDelete,
     onConnect,
-    addNode,
-    setInstance,
   } = useGraph()
 
   const getFlowData = useCallback(() => {
@@ -38,8 +42,11 @@ const FlowGraph = forwardRef<FlowGraphHandle, FlowGraphProps>(({ data }, ref) =>
       const flow = JSON.parse(data.data)
       setNodes(flow.nodes || [])
       setEdges(flow.edges || [])
+      flow.edges.forEach((e: any) => {
+        addConnection(e)
+      })
     }
-  }, [data, instanceRef, setEdges, setNodes])
+  }, [addConnection, data, instanceRef, setEdges, setNodes])
 
   useImperativeHandle(ref, () => ({ getFlowData }), [getFlowData])
 
@@ -51,9 +58,11 @@ const FlowGraph = forwardRef<FlowGraphHandle, FlowGraphProps>(({ data }, ref) =>
       nodes={nodes}
       edges={edges}
       nodeTypes={nodeTypes}
-      onNodesChange={onNodesChange}
-      onEdgesChange={onEdgesChange}
       onConnect={onConnect}
+      onNodesChange={onNodesChange}
+      onNodesDelete={onNodesDelete}
+      onEdgesChange={onEdgesChange}
+      onEdgesDelete={onEdgesDelete}
       defaultEdgeOptions={{
         animated: true,
         markerEnd: {

@@ -1,28 +1,24 @@
-import { Handle, NodeProps, Position } from "reactflow"
-import { isNil } from "lodash-es"
-import useNode from "../use-node"
+import { Badge } from "@/components/ui/badge"
 import { Card, CardContent, CardHeader } from "@/components/ui/card"
 import { Separator } from "@/components/ui/separator"
-import { Badge } from "@/components/ui/badge"
+import { isNil } from "lodash-es"
+import { Handle, NodeProps, Position } from "reactflow"
 import { useDataFlowContext } from "../editor/use-data-flow-context"
+import useNode from "../editor/use-node"
 
 const Add = memo<NodeProps>(({ id, isConnectable, data }) => {
-  const { createSource } = useDataFlowContext()
+  const { getSource } = useDataFlowContext()
   const { getIncomingEdges, isHandleConnected } = useNode(id)
-  const channel = useMemo(() => createSource(id), [createSource, id])
+  const source = useMemo(() => getSource(id), [getSource, id])
 
   const effect = useCallback((d: typeof data) => {
     if (isNil(d.op1) || isNil(d.op2)) return undefined
     return Number(d.op1) + Number(d.op2)
   }, [])
 
-  const onConnect = useCallback(() => {
-    channel.publish(effect(data))
-  }, [data, channel, effect])
-
   useEffect(() => {
-    channel.publish(effect(data))
-  }, [data, channel, effect])
+    source.publish(effect(data))
+  }, [data, source, effect])
 
   return (
     <Card>
@@ -46,7 +42,7 @@ const Add = memo<NodeProps>(({ id, isConnectable, data }) => {
         style={{ top: "auto", bottom: 25 }}
         isConnectable={getIncomingEdges("op2").length < 1}
       />
-      <Handle id="value" type="source" position={Position.Right} isConnectable={isConnectable} onConnect={onConnect} />
+      <Handle id="value" type="source" position={Position.Right} isConnectable={isConnectable} />
     </Card>
   )
 })

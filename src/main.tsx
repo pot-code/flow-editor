@@ -1,13 +1,13 @@
 import { LogtoProvider } from "@logto/react"
 import { QueryClientProvider } from "@tanstack/react-query"
-import { ReactQueryDevtools } from "@tanstack/react-query-devtools"
-import { TanStackRouterDevtools } from "@tanstack/router-devtools"
+// import { ReactQueryDevtools } from "@tanstack/react-query-devtools"
+// import { TanStackRouterDevtools } from "@tanstack/router-devtools"
 import React from "react"
 import { createRoot } from "react-dom/client"
 
 import { Toaster } from "./components/ui/sonner"
 import RefreshToken from "./features/auth/refresh-token"
-import router from "./router"
+// import router from "./router"
 import setup from "./setup"
 
 import "reactflow/dist/style.css"
@@ -30,8 +30,8 @@ setup().then(() =>
         <QueryClientProvider client={client}>
           <App />
           <RefreshToken />
-          <ReactQueryDevtools initialIsOpen={false} />
-          <TanStackRouterDevtools router={router} />
+          {/* <ReactQueryDevtools initialIsOpen={false} /> */}
+          {/* <TanStackRouterDevtools router={router} /> */}
         </QueryClientProvider>
       </LogtoProvider>
       <Toaster richColors toastOptions={{ closeButton: true }} />
