@@ -1,14 +1,5 @@
 import { produce } from "immer"
-import {
-  Connection,
-  EdgeSelectionChange,
-  Node,
-  OnEdgesChange,
-  ReactFlowInstance,
-  addEdge,
-  useEdgesState,
-  useNodesState,
-} from "reactflow"
+import { Connection, Node, ReactFlowInstance, addEdge, useEdgesState, useNodesState } from "reactflow"
 
 export default function useGraph() {
   const instanceRef = useRef<ReactFlowInstance>()
@@ -17,14 +8,45 @@ export default function useGraph() {
 
   const onConnect = useCallback((params: Connection) => setEdges((eds) => addEdge(params, eds)), [setEdges])
 
-  // eslint-disable-next-line no-underscore-dangle
-  const _onEdgesChange: OnEdgesChange = (changes) => {
-    const instance = instanceRef.current
-    if (instance) {
-      changes.forEach((c) => console.log("🚀 ~ _onEdgesChange ~ c:", instance.getEdge((c as EdgeSelectionChange).id)))
-    }
-    onEdgesChange(changes)
-  }
+  // function addConnection(c: Connection) {
+  //   const source = createSource(c.source!)
+
+  //   source.subscribe(c.id, (data) => {
+  //     setNodes(
+  //       produce((draft) => {
+  //         draft
+  //           .filter((n) => n.id === edge.target)
+  //           .forEach((n) => {
+  //             n.data[edge.targetHandle!] = data
+  //           })
+  //         draft
+  //           .filter((n) => n.id === edge.source)
+  //           .forEach((n) => {
+  //             n.data[edge.sourceHandle!] = data
+  //           })
+  //       }),
+  //     )
+  //   })
+  // }
+
+  // function removeConnection(id: string) {
+  //   const edge = instanceRef.current?.getEdge(id)
+  //   if (!edge) return
+
+  //   const source = getSource(edge.source)
+  //   if (!source) return
+
+  //   source.unsubscribe(edge.id)
+  //   setNodes(
+  //     produce((draft) =>
+  //       draft
+  //         .filter((n) => n.id === edge.target)
+  //         .forEach((n) => {
+  //           n.data[edge.targetHandle!] = undefined
+  //         }),
+  //     ),
+  //   )
+  // }
 
   // TODO: use DnD
   function addNode(nodeType: string) {
@@ -52,7 +74,7 @@ export default function useGraph() {
     setEdges,
     setNodes,
     onNodesChange,
-    onEdgesChange: _onEdgesChange,
+    onEdgesChange,
     onConnect,
     addNode,
     setInstance,

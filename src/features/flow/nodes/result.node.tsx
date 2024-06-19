@@ -6,6 +6,7 @@ import useNode from "../use-node"
 
 const Result = memo<NodeProps>(({ id, data }) => {
   const { getIncomingEdges } = useNode(id)
+
   return (
     <>
       <Card>

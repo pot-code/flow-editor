@@ -7,9 +7,9 @@ import { Badge } from "@/components/ui/badge"
 import { useDataFlowContext } from "../editor/use-data-flow-context"
 
 const Multiply = memo<NodeProps>(({ id, isConnectable, data }) => {
-  const { createChannel } = useDataFlowContext()
+  const { createSource } = useDataFlowContext()
   const { getIncomingEdges, isHandleConnected } = useNode(id)
-  const dataSource = useMemo(() => createChannel(id), [createChannel, id])
+  const dataSource = useMemo(() => createSource(id), [createSource, id])
 
   const effect = useCallback((d: typeof data) => {
     if (isNil(d.op1) || isNil(d.op2)) return undefined

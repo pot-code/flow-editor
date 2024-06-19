@@ -3,22 +3,20 @@ import { Input } from "@/components/ui/input"
 import { Separator } from "@/components/ui/separator"
 import { Handle, NodeProps, Position } from "reactflow"
 import { useDataFlowContext } from "../editor/use-data-flow-context"
-import useNode from "../use-node"
 import { NodeData } from "./types"
 
 const NumberInput = memo<NodeProps<NodeData<number>>>(({ id, isConnectable, data }) => {
-  const [value, setValue] = useState(data.value)
-  const { createChannel } = useDataFlowContext()
-  const channel = useMemo(() => createChannel(id), [createChannel, id])
-  const { setNodeData } = useNode(id)
+  const [value, setValue] = useState(data.value || 0)
+  const { createSource } = useDataFlowContext()
+  const channel = useMemo(() => createSource(id), [createSource, id])
 
   const onConnect = useCallback(() => {
     channel.publish(data.value)
   }, [data.value, channel])
 
   const onBlur = useCallback(() => {
-    setNodeData({ value })
-  }, [setNodeData, value])
+    channel.publish(value)
+  }, [channel, value])
 
   const onChange = useCallback((e: React.ChangeEvent<HTMLInputElement>) => {
     setValue(Number(e.target.value))

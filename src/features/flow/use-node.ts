@@ -1,5 +1,4 @@
 import { getConnectedEdges, useReactFlow } from "reactflow"
-import { NodeData } from "./nodes/types"
 
 export default function useNode(id: string) {
   const instance = useReactFlow()
@@ -31,22 +30,7 @@ export default function useNode(id: string) {
     [getIncomingEdges, getOutgoingEdges],
   )
 
-  const setNodeData = useCallback(
-    (data: NodeData) => {
-      instance.setNodes((nds) =>
-        nds.map((node) => {
-          if (node.id === id) {
-            return { ...node, data }
-          }
-          return node
-        }),
-      )
-    },
-    [id, instance],
-  )
-
   return {
-    setNodeData,
     isHandleConnected,
     getIncomingEdges,
     getOutgoingEdges,
