@@ -1,40 +1,38 @@
-import { getConnectedEdges, useReactFlow, useStore } from "reactflow"
+import { getConnectedEdges, useReactFlow } from "reactflow"
+import { NodeData } from "./nodes/types"
 
 export default function useNode(id: string) {
   const instance = useReactFlow()
-  const edges = useStore((state) => state.edges)
 
-  const limitConnection = useCallback(
-    (handleType: "source" | "target", handleId: string, count: number) => {
-      const node = instance.getNode(id)
-      if (node) {
-        const connectedEdges = getConnectedEdges([node], edges)
-        const connections = connectedEdges.filter(
-          (e) => e[handleType] === id && e[`${handleType}Handle`] === handleId,
-        ).length
-        if (connections >= count) {
-          return false
-        }
-      }
-      return true
+  const getEdges = useCallback(() => {
+    const node = instance.getNode(id)
+    const edges = instance.getEdges()
+    return node ? getConnectedEdges([node], edges) : []
+  }, [id, instance])
+
+  const getOutgoingEdges = useCallback(
+    (handleId: string) => {
+      const edges = getEdges()
+      return edges.filter((e) => e.source === id && e.sourceHandle === handleId)
     },
-    [edges, id, instance],
+    [getEdges, id],
   )
 
-  const isConnected = useCallback(
-    (handleType: "source" | "target", handleId: string) => {
-      const node = instance.getNode(id)
-      if (node) {
-        const connectedEdges = getConnectedEdges([node], edges)
-        return connectedEdges.some((e) => e[handleType] === id && e[`${handleType}Handle`] === handleId)
-      }
-      return false
+  const getIncomingEdges = useCallback(
+    (handleId: string) => {
+      const edges = getEdges()
+      return edges.filter((e) => e.target === id && e.targetHandle === handleId)
     },
-    [edges, id, instance],
+    [getEdges, id],
+  )
+
+  const isHandleConnected = useCallback(
+    (handleId: string) => getIncomingEdges(handleId).length > 0 || getOutgoingEdges(handleId).length > 0,
+    [getIncomingEdges, getOutgoingEdges],
   )
 
   const setNodeData = useCallback(
-    (data: any) => {
+    (data: NodeData) => {
       instance.setNodes((nds) =>
         nds.map((node) => {
           if (node.id === id) {
@@ -49,7 +47,8 @@ export default function useNode(id: string) {
 
   return {
     setNodeData,
-    isConnected,
-    limitConnection,
+    isHandleConnected,
+    getIncomingEdges,
+    getOutgoingEdges,
   }
 }

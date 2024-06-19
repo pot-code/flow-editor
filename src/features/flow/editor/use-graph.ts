@@ -9,7 +9,7 @@ export default function useGraph() {
   const onConnect = useCallback((params: Connection) => setEdges((eds) => addEdge(params, eds)), [])
 
   // TODO: use DnD
-  function onAddNode(nodeType: string) {
+  function addNode(nodeType: string) {
     const node: Node = {
       type: nodeType,
       id: Date.now().toString(),
@@ -23,5 +23,5 @@ export default function useGraph() {
     )
   }
 
-  return { nodes, edges, setEdges, setNodes, onNodesChange, onEdgesChange, onConnect, onAddNode }
+  return { nodes, edges, setEdges, setNodes, onNodesChange, onEdgesChange, onConnect, addNode }
 }

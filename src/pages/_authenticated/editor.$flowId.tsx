@@ -3,7 +3,7 @@ import { Button } from "@/components/ui/button"
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from "@/components/ui/dropdown-menu"
 import Loading from "@/components/ui/loading"
 import { DEFAULT_FLOW_NAME } from "@/features/flow/constatns"
-import DataFlowProvider from "@/features/flow/editor/context"
+import DataFlowProvider from "@/features/flow/editor/data-flow-context"
 import NameInput from "@/features/flow/editor/name-input"
 import useGraph from "@/features/flow/editor/use-graph"
 import { getNodeTypes } from "@/features/flow/nodes"
@@ -17,16 +17,15 @@ import { isEmpty } from "lodash-es"
 import ReactFlow, { Background, BackgroundVariant, Controls, MarkerType, Panel, ReactFlowProvider } from "reactflow"
 import { toast } from "sonner"
 
-const nodeTypes = getNodeTypes()
-
 export const Route = createFileRoute("/_authenticated/editor/$flowId")({
   component: FlowEditor,
   onLeave: ({ context: { queryClient } }) => queryClient.invalidateQueries({ queryKey: ["flow"] }),
 })
 
 function FlowEditor() {
+  const nodeTypes = useMemo(() => getNodeTypes(), [])
   const navigate = useNavigate()
-  const { nodes, edges, setEdges, setNodes, onNodesChange, onEdgesChange, onConnect, onAddNode } = useGraph()
+  const { nodes, edges, setEdges, setNodes, onNodesChange, onEdgesChange, onConnect, addNode } = useGraph()
 
   const flowId = Route.useParams().flowId
   const [title, setTitle] = useState("")
@@ -117,10 +116,10 @@ function FlowEditor() {
                       </Button>
                     </DropdownMenuTrigger>
                     <DropdownMenuContent side="right" align="start">
-                      <DropdownMenuItem onSelect={() => onAddNode("number")}>数值</DropdownMenuItem>
-                      <DropdownMenuItem onSelect={() => onAddNode("add")}>加法</DropdownMenuItem>
-                      <DropdownMenuItem onSelect={() => onAddNode("multiply")}>乘法</DropdownMenuItem>
-                      <DropdownMenuItem onSelect={() => onAddNode("result")}>结果</DropdownMenuItem>
+                      <DropdownMenuItem onSelect={() => addNode("number")}>数值</DropdownMenuItem>
+                      <DropdownMenuItem onSelect={() => addNode("add")}>加法</DropdownMenuItem>
+                      <DropdownMenuItem onSelect={() => addNode("multiply")}>乘法</DropdownMenuItem>
+                      <DropdownMenuItem onSelect={() => addNode("result")}>结果</DropdownMenuItem>
                     </DropdownMenuContent>
                   </DropdownMenu>
                 </div>

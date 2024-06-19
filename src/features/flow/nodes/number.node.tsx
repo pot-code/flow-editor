@@ -1,31 +1,32 @@
-import { Handle, NodeProps, Position } from "reactflow"
-import useNode from "../use-node"
-import { Separator } from "@/components/ui/separator"
-import { Input } from "@/components/ui/input"
 import { Card, CardContent, CardHeader } from "@/components/ui/card"
-import { useDataFlowContext } from "../editor/user-data-flow-context"
+import { Input } from "@/components/ui/input"
+import { Separator } from "@/components/ui/separator"
+import { Handle, NodeProps, Position } from "reactflow"
+import { useDataFlowContext } from "../editor/use-data-flow-context"
+import useNode from "../use-node"
+import { NodeData } from "./types"
 
-const Number = memo<NodeProps>(({ id, isConnectable, data }) => {
+const NumberInput = memo<NodeProps<NodeData<number>>>(({ id, isConnectable, data }) => {
   const [value, setValue] = useState(data.value)
-  const { getDataSource } = useDataFlowContext()
-  const dataSource = useMemo(() => getDataSource(id), [getDataSource, id])
+  const { createChannel } = useDataFlowContext()
+  const channel = useMemo(() => createChannel(id), [createChannel, id])
   const { setNodeData } = useNode(id)
 
   const onConnect = useCallback(() => {
-    dataSource.publish(data.value)
-  }, [data.value, dataSource])
+    channel.publish(data.value)
+  }, [data.value, channel])
 
   const onBlur = useCallback(() => {
     setNodeData({ value })
   }, [setNodeData, value])
 
   const onChange = useCallback((e: React.ChangeEvent<HTMLInputElement>) => {
-    setValue(e.target.value || 0)
+    setValue(Number(e.target.value))
   }, [])
 
   useEffect(() => {
-    dataSource.publish(data.value)
-  }, [data.value, dataSource])
+    channel.publish(data.value)
+  }, [data.value, channel])
 
   return (
     <>
@@ -48,4 +49,4 @@ const Number = memo<NodeProps>(({ id, isConnectable, data }) => {
   )
 })
 
-export default Number
+export default NumberInput
