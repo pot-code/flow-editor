@@ -1,20 +1,18 @@
 import { getFlow, updateFlow } from "@/api/flow"
 import { Button } from "@/components/ui/button"
-import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from "@/components/ui/dropdown-menu"
 import Loading from "@/components/ui/loading"
 import { DEFAULT_FLOW_NAME } from "@/features/flow/constatns"
 import DataFlowProvider from "@/features/flow/editor/data-flow-context"
+import FlowGraph, { FlowGraphHandle } from "@/features/flow/editor/flow-graph"
 import NameInput from "@/features/flow/editor/name-input"
-import useGraph from "@/features/flow/editor/use-graph"
-import { getNodeTypes } from "@/features/flow/nodes"
 import { extractErrorMessage } from "@/lib/http"
 import { delayedPromise } from "@/utils/promise"
 import time from "@/utils/time"
-import { ArrowLeft, Plus } from "@phosphor-icons/react"
+import { ArrowLeft } from "@phosphor-icons/react"
 import { useMutation, useQuery } from "@tanstack/react-query"
 import { createFileRoute, useNavigate } from "@tanstack/react-router"
 import { isEmpty } from "lodash-es"
-import ReactFlow, { Background, BackgroundVariant, Controls, MarkerType, Panel, ReactFlowProvider } from "reactflow"
+import { ReactFlowProvider } from "reactflow"
 import { toast } from "sonner"
 
 export const Route = createFileRoute("/_authenticated/editor/$flowId")({
@@ -23,9 +21,8 @@ export const Route = createFileRoute("/_authenticated/editor/$flowId")({
 })
 
 function FlowEditor() {
-  const nodeTypes = useMemo(() => getNodeTypes(), [])
   const navigate = useNavigate()
-  const { nodes, edges, setEdges, setNodes, onNodesChange, onEdgesChange, onConnect, addNode } = useGraph()
+  const graphRef = useRef<FlowGraphHandle>(null)
 
   const flowId = Route.useParams().flowId
   const [title, setTitle] = useState("")
@@ -48,11 +45,10 @@ function FlowEditor() {
   })
 
   function onSave() {
-    if (nodes && edges) {
+    if (graphRef.current) {
       updateFlowMutation.mutate({
-        nodes: JSON.stringify(nodes),
-        edges: JSON.stringify(edges),
-        title: title,
+        data: JSON.stringify(graphRef.current.getFlowData()),
+        title,
       })
     }
   }
@@ -64,11 +60,8 @@ function FlowEditor() {
 
   useEffect(() => {
     if (data) {
-      if (data.nodes) setNodes(JSON.parse(data.nodes))
-      if (data.edges) setEdges(JSON.parse(data.edges))
       setTitle(data.title)
     }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [data])
 
   return (
@@ -87,46 +80,7 @@ function FlowEditor() {
       <div className="flex-grow flex">
         <DataFlowProvider>
           <ReactFlowProvider>
-            <ReactFlow
-              fitView
-              className="bg-gray-50"
-              nodes={nodes}
-              edges={edges}
-              nodeTypes={nodeTypes}
-              onNodesChange={onNodesChange}
-              onEdgesChange={onEdgesChange}
-              onConnect={onConnect}
-              defaultEdgeOptions={{
-                animated: true,
-                markerEnd: {
-                  type: MarkerType.ArrowClosed,
-                },
-              }}
-              fitViewOptions={{
-                minZoom: 1,
-                maxZoom: 1,
-              }}
-            >
-              <Panel position="top-left">
-                <div className="flex flex-col gap-2 items-center">
-                  <DropdownMenu>
-                    <DropdownMenuTrigger asChild>
-                      <Button size="icon" color="primary">
-                        <Plus />
-                      </Button>
-                    </DropdownMenuTrigger>
-                    <DropdownMenuContent side="right" align="start">
-                      <DropdownMenuItem onSelect={() => addNode("number")}>数值</DropdownMenuItem>
-                      <DropdownMenuItem onSelect={() => addNode("add")}>加法</DropdownMenuItem>
-                      <DropdownMenuItem onSelect={() => addNode("multiply")}>乘法</DropdownMenuItem>
-                      <DropdownMenuItem onSelect={() => addNode("result")}>结果</DropdownMenuItem>
-                    </DropdownMenuContent>
-                  </DropdownMenu>
-                </div>
-              </Panel>
-              <Controls />
-              <Background variant={BackgroundVariant.Dots} />
-            </ReactFlow>
+            <FlowGraph ref={graphRef} data={data} />
           </ReactFlowProvider>
         </DataFlowProvider>
       </div>

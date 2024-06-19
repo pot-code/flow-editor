@@ -4,7 +4,13 @@
  * 流程编辑器 API
  * OpenAPI spec version: 0.0.1
  */
-import type { CreateFlowRequestBody, FlowDetailData, FlowListItemData, GetFlowListParams } from "./model"
+import type {
+  CreateFlowRequestBody,
+  FlowDetailData,
+  FlowListItemData,
+  GetFlowListParams,
+  UpdateFlowData,
+} from "./model"
 import { customInstance } from "../lib/http/instance"
 import type { BodyType } from "../lib/http/instance"
 
@@ -54,11 +60,11 @@ export const getFlow = (id: string, options?: SecondParameter<typeof customInsta
  */
 export const updateFlow = (
   id: string,
-  createFlowRequestBody: BodyType<CreateFlowRequestBody>,
+  updateFlowData: BodyType<UpdateFlowData>,
   options?: SecondParameter<typeof customInstance>,
 ) => {
   return customInstance<FlowDetailData>(
-    { url: `/flow/${id}`, method: "PUT", headers: { "Content-Type": "application/json" }, data: createFlowRequestBody },
+    { url: `/flow/${id}`, method: "PUT", headers: { "Content-Type": "application/json" }, data: updateFlowData },
     options,
   )
 }

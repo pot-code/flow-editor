@@ -8,12 +8,10 @@
 export interface FlowDetailData {
   /** flow 创建时间 */
   created_at: string
-  /** flow 边 */
-  edges?: string
+  /** flow 数据 */
+  data?: string
   /** flow id */
   id: number
-  /** flow 节点 */
-  nodes?: string
   /** flow 标题 */
   title: string
 }

@@ -1,14 +1,13 @@
 import React from "react"
 import { Subject, Unsubscribable } from "rxjs"
-import { NodeData } from "../nodes/types"
 
 interface DataFlowContextState {
   createChannel: (id: string) => DataChannel
   removeChannel: (id: string) => void
-  subscribe: (channelId: string, fn: (data: NodeData) => void) => Subscription | undefined
+  getChannel: (channelId: string) => DataChannel | undefined
 }
 
-interface Subscription {
+type Subscription = {
   stub: Unsubscribable
 }
 
@@ -35,42 +34,39 @@ class DataChannel {
 }
 
 export default function DataFlowProvider({ children }: { children: React.ReactNode }) {
-  const channelMap = useMemo(() => new Map<string, DataChannel>(), [])
+  const channelMap = useRef(new Map<string, DataChannel>())
 
   const removeChannel = useCallback(
     (id: string) => {
-      channelMap.get(id)?.dispose()
-      channelMap.delete(id)
+      channelMap.current.get(id)?.dispose()
+      channelMap.current.delete(id)
     },
     [channelMap],
   )
 
   const createChannel = useCallback(
     (id: string) => {
-      let dataSource = channelMap.get(id)
+      let dataSource = channelMap.current.get(id)
       if (!dataSource) {
         dataSource = new DataChannel()
-        channelMap.set(id, dataSource)
+        channelMap.current.set(id, dataSource)
       }
       return dataSource
     },
     [channelMap],
   )
 
-  const subscribe = useCallback(
-    (channelId: string, fn: (data: NodeData) => void) => {
-      const channel = channelMap.get(channelId)
-      if (!channel) return
-      return channel.subscribe(fn)
-    },
-    [channelMap],
+  const getChannel = useCallback((channelId: string) => channelMap.current.get(channelId), [channelMap])
+
+  const value = useMemo(
+    () => ({ createChannel, removeChannel, getChannel }),
+    [createChannel, removeChannel, getChannel],
   )
 
-  const value = useMemo(() => ({ createChannel, removeChannel, subscribe }), [createChannel, removeChannel, subscribe])
-
   useEffect(() => {
+    const c = channelMap.current
     return () => {
-      channelMap.forEach((channel) => channel.dispose())
+      c.forEach((channel) => channel.dispose())
     }
   })
   return <DataFlowContext.Provider value={value}>{children}</DataFlowContext.Provider>

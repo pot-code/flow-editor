@@ -1,12 +1,30 @@
 import { produce } from "immer"
-import { Connection, Node, addEdge, useEdgesState, useNodesState } from "reactflow"
+import {
+  Connection,
+  EdgeSelectionChange,
+  Node,
+  OnEdgesChange,
+  ReactFlowInstance,
+  addEdge,
+  useEdgesState,
+  useNodesState,
+} from "reactflow"
 
 export default function useGraph() {
+  const instanceRef = useRef<ReactFlowInstance>()
   const [nodes, setNodes, onNodesChange] = useNodesState([])
   const [edges, setEdges, onEdgesChange] = useEdgesState([])
 
-  // eslint-disable-next-line react-hooks/exhaustive-deps
-  const onConnect = useCallback((params: Connection) => setEdges((eds) => addEdge(params, eds)), [])
+  const onConnect = useCallback((params: Connection) => setEdges((eds) => addEdge(params, eds)), [setEdges])
+
+  // eslint-disable-next-line no-underscore-dangle
+  const _onEdgesChange: OnEdgesChange = (changes) => {
+    const instance = instanceRef.current
+    if (instance) {
+      changes.forEach((c) => console.log("🚀 ~ _onEdgesChange ~ c:", instance.getEdge((c as EdgeSelectionChange).id)))
+    }
+    onEdgesChange(changes)
+  }
 
   // TODO: use DnD
   function addNode(nodeType: string) {
@@ -23,5 +41,20 @@ export default function useGraph() {
     )
   }
 
-  return { nodes, edges, setEdges, setNodes, onNodesChange, onEdgesChange, onConnect, addNode }
+  function setInstance(instance: ReactFlowInstance) {
+    instanceRef.current = instance
+  }
+
+  return {
+    instanceRef,
+    nodes,
+    edges,
+    setEdges,
+    setNodes,
+    onNodesChange,
+    onEdgesChange: _onEdgesChange,
+    onConnect,
+    addNode,
+    setInstance,
+  }
 }

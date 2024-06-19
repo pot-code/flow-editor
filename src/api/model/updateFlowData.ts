@@ -5,9 +5,9 @@
  * OpenAPI spec version: 0.0.1
  */
 
-export interface CreateFlowRequestBody {
+export interface UpdateFlowData {
   /** flow 数据 */
   data?: string
   /** flow 标题 */
-  title: string
+  title?: string
 }
