@@ -1,12 +1,10 @@
 import { Card, CardContent, CardHeader } from "@/components/ui/card"
 import { Input } from "@/components/ui/input"
 import { Separator } from "@/components/ui/separator"
-import { Handle, NodeProps, Position } from "reactflow"
-import useNode from "../editor/use-node"
+import { NodeProps, Position } from "reactflow"
+import InputHandle from "../editor/input-handle"
 
-const Result = memo<NodeProps>(({ id, data }) => {
-  const { getIncomingEdges } = useNode(id)
-
+const Result = memo<NodeProps>(({ data }) => {
   return (
     <Card>
       <CardHeader>结果</CardHeader>
@@ -14,7 +12,7 @@ const Result = memo<NodeProps>(({ id, data }) => {
       <CardContent className="pt-4">
         <Input disabled type="number" value={data.value} />
       </CardContent>
-      <Handle id="value" type="target" position={Position.Left} isConnectable={getIncomingEdges("value").length < 1} />
+      <InputHandle id="value" position={Position.Left} />
     </Card>
   )
 })

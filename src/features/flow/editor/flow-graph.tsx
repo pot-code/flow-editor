@@ -22,7 +22,6 @@ const FlowGraph = forwardRef<FlowGraphHandle, FlowGraphProps>(({ data }, ref) =>
     edges,
     instanceRef,
     addNode,
-    addConnection,
     setInstance,
     setEdges,
     setNodes,
@@ -42,11 +41,8 @@ const FlowGraph = forwardRef<FlowGraphHandle, FlowGraphProps>(({ data }, ref) =>
       const flow = JSON.parse(data.data)
       setNodes(flow.nodes || [])
       setEdges(flow.edges || [])
-      flow.edges.forEach((e: any) => {
-        addConnection(e)
-      })
     }
-  }, [addConnection, data, instanceRef, setEdges, setNodes])
+  }, [data, instanceRef, setEdges, setNodes])
 
   useImperativeHandle(ref, () => ({ getFlowData }), [getFlowData])
 
