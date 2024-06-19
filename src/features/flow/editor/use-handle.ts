@@ -1,4 +1,3 @@
-import { produce } from "immer"
 import { getConnectedEdges, useReactFlow } from "reactflow"
 
 export default function useHandle() {
@@ -21,21 +20,6 @@ export default function useHandle() {
     [getEdges],
   )
 
-  const updateHandleData = useCallback(
-    (nodeId: string, handleId: string, data: any) => {
-      instance.setNodes(
-        produce((draft) => {
-          draft
-            .filter((node) => node.id === nodeId)
-            .forEach((node) => {
-              node.data[handleId] = data
-            })
-        }),
-      )
-    },
-    [instance],
-  )
-
   const getIncomingEdges = useCallback(
     (nodeId: string, handleId: string) => {
       const edges = getEdges(nodeId)
@@ -52,7 +36,6 @@ export default function useHandle() {
 
   return {
     isHandleConnected,
-    updateHandleData,
     getIncomingEdges,
     getOutgoingEdges,
   }

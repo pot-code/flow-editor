@@ -5,7 +5,7 @@ import { NodeProps, Position } from "reactflow"
 import OutputHandle from "../editor/output-handle"
 
 const NumberInput = memo<NodeProps>(({ isConnectable, data }) => {
-  const [value, setValue] = useState(data.o)
+  const [value, setValue] = useState(data.o || 0)
 
   const onChange = useCallback((e: React.ChangeEvent<HTMLInputElement>) => {
     setValue(Number(e.target.value))

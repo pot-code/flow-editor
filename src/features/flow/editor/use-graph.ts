@@ -9,6 +9,29 @@ export default function useGraph() {
   const [edges, setEdges, onEdgesChange] = useEdgesState([])
   const { getSource, removeSource } = useDataFlowContext()
 
+  const addConnection = useCallback(
+    (c: DataConnection) => {
+      const source = getSource(c.source!)
+      source.subscribe(c, (data) => {
+        setNodes(
+          produce((draft) => {
+            draft
+              .filter((node) => node.id === c.source)
+              .forEach((node) => {
+                node.data[c.sourceHandle!] = data
+              })
+            draft
+              .filter((node) => node.id === c.target)
+              .forEach((node) => {
+                node.data[c.targetHandle!] = data
+              })
+          }),
+        )
+      })
+    },
+    [getSource, setNodes],
+  )
+
   const removeConnection = useCallback(
     (c: DataConnection) => {
       setNodes(
@@ -34,8 +57,9 @@ export default function useGraph() {
   const onConnect = useCallback(
     (params: Connection) => {
       setEdges((eds) => addEdge(params, eds))
+      addConnection(params)
     },
-    [setEdges],
+    [addConnection, setEdges],
   )
 
   const onNodesDelete = useCallback(
@@ -87,6 +111,7 @@ export default function useGraph() {
     onEdgesDelete,
     onConnect,
     addNode,
+    addConnection,
     removeConnection,
     setInstance,
   }

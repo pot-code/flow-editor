@@ -7,12 +7,12 @@ import InputHandle from "../editor/input-handle"
 import OutputHandle from "../editor/output-handle"
 import useNode from "../editor/use-node"
 
-const Add = memo<NodeProps>(({ id, isConnectable, data }) => {
+const Add = memo<NodeProps<{ i1?: number; i2?: number; o?: number }>>(({ id, isConnectable, data }) => {
   const { isHandleConnected } = useNode(id)
 
   const effect = useCallback((d: typeof data) => {
-    if (isNil(d.op1) || isNil(d.op2)) return undefined
-    return Number(d.op1) + Number(d.op2)
+    if (isNil(d.i1) || isNil(d.i2)) return undefined
+    return Number(d.i1) + Number(d.i2)
   }, [])
 
   return (
