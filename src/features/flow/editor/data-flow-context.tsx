@@ -26,7 +26,9 @@ class DataSource {
 
   subscribe(c: DataConnection, cb: (data: any) => void) {
     const key = this.getConnectionKey(c)
-    this.subscriptions.set(key, this.sub.subscribe(cb))
+    if (!this.subscriptions.has(key)) {
+      this.subscriptions.set(key, this.sub.subscribe(cb))
+    }
   }
 
   unsubscribe(c: DataConnection) {

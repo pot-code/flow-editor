@@ -42,8 +42,10 @@ const FlowGraph = forwardRef<FlowGraphHandle, FlowGraphProps>(({ data }, ref) =>
       const flow = JSON.parse(data.data)
       setNodes(flow.nodes || [])
       setEdges(flow.edges || [])
-      flow.edges.forEach((e: any) => {
-        addConnection(e)
+      setTimeout(() => {
+        flow.edges.forEach((e: any) => {
+          addConnection(e)
+        })
       })
     }
   }, [addConnection, data, instanceRef, setEdges, setNodes])
