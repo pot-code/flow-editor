@@ -30,7 +30,7 @@ const Number = memo<NodeProps>(({ id, isConnectable, data }) => {
   return (
     <>
       <Card>
-        <CardHeader>Number</CardHeader>
+        <CardHeader>数值</CardHeader>
         <Separator />
         <CardContent className="pt-4">
           <Input

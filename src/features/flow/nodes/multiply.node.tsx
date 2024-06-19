@@ -27,11 +27,11 @@ const Multiply = memo<NodeProps>(({ id, isConnectable, data }) => {
   return (
     <>
       <Card>
-        <CardHeader>Multiply</CardHeader>
+        <CardHeader>乘法</CardHeader>
         <Separator />
         <CardContent className="flex pt-4 flex-col gap-2">
-          <Badge color={isConnected("target", "op1") ? "success" : "default"}>Input: {data.op1 ?? "NaN"}</Badge>
-          <Badge color={isConnected("target", "op2") ? "success" : "default"}>Input: {data.op2 ?? "NaN"}</Badge>
+          <Badge variant={isConnected("target", "op1") ? "default" : "secondary"}>Input: {data.op1 ?? "空数据"}</Badge>
+          <Badge variant={isConnected("target", "op2") ? "default" : "secondary"}>Input: {data.op2 ?? "空数据"}</Badge>
         </CardContent>
       </Card>
       <Handle

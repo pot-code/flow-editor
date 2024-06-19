@@ -9,7 +9,7 @@ const Result = memo<NodeProps>(({ id, data }) => {
   return (
     <>
       <Card>
-        <CardHeader>Result</CardHeader>
+        <CardHeader>结果</CardHeader>
         <Separator />
         <CardContent className="pt-4">
           <Input disabled type="number" value={data.value} />

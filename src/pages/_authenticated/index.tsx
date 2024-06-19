@@ -7,7 +7,6 @@ import { Input } from "@/components/ui/input"
 import Loading from "@/components/ui/loading"
 import useTokenClaim from "@/features/auth/use-token-claim"
 import FlowList from "@/features/dashboard/flow-list"
-import { DEFAULT_FLOW_NAME } from "@/features/flow/config"
 import { extractErrorMessage } from "@/lib/http"
 import { delayedPromise } from "@/utils/promise"
 import time from "@/utils/time"
@@ -17,6 +16,7 @@ import { useMutation } from "@tanstack/react-query"
 import { createFileRoute, useNavigate } from "@tanstack/react-router"
 import { toast } from "sonner"
 import { useForm } from "react-hook-form"
+import { DEFAULT_FLOW_NAME } from "@/features/flow/constatns"
 
 export const Route = createFileRoute("/_authenticated/")({
   component: Home,

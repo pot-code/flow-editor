@@ -25,15 +25,13 @@ const Add = memo<NodeProps>(({ id, isConnectable, data }) => {
   }, [data, dataSource, effect])
 
   return (
-    <>
-      <Card>
-        <CardHeader>Add</CardHeader>
-        <Separator />
-        <CardContent className="flex pt-4 flex-col gap-2">
-          <Badge color={isConnected("target", "op1") ? "success" : "default"}>Input: {data.op1 ?? "NaN"}</Badge>
-          <Badge color={isConnected("target", "op2") ? "success" : "default"}>Input: {data.op2 ?? "NaN"}</Badge>
-        </CardContent>
-      </Card>
+    <Card>
+      <CardHeader>加法</CardHeader>
+      <Separator />
+      <CardContent className="flex pt-4 flex-col gap-2">
+        <Badge variant={isConnected("target", "op1") ? "default" : "secondary"}>Input: {data.op1 ?? "空数据"}</Badge>
+        <Badge variant={isConnected("target", "op2") ? "default" : "secondary"}>Input: {data.op2 ?? "空数据"}</Badge>
+      </CardContent>
       <Handle
         id="op1"
         type="target"
@@ -49,7 +47,7 @@ const Add = memo<NodeProps>(({ id, isConnectable, data }) => {
         isConnectable={limitConnection("target", "op2", 1)}
       />
       <Handle id="value" type="source" position={Position.Right} isConnectable={isConnectable} onConnect={onConnect} />
-    </>
+    </Card>
   )
 })
 

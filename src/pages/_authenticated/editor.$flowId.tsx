@@ -2,7 +2,7 @@ import { getFlow, updateFlow } from "@/api/flow"
 import { Button } from "@/components/ui/button"
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from "@/components/ui/dropdown-menu"
 import Loading from "@/components/ui/loading"
-import { DEFAULT_FLOW_NAME } from "@/features/flow/config"
+import { DEFAULT_FLOW_NAME } from "@/features/flow/constatns"
 import DataFlowProvider from "@/features/flow/editor/context"
 import NameInput from "@/features/flow/editor/name-input"
 import useGraph from "@/features/flow/editor/use-graph"
@@ -116,11 +116,11 @@ function FlowEditor() {
                         <Plus />
                       </Button>
                     </DropdownMenuTrigger>
-                    <DropdownMenuContent>
-                      <DropdownMenuItem onSelect={() => onAddNode("number")}>Number</DropdownMenuItem>
-                      <DropdownMenuItem onSelect={() => onAddNode("add")}>Addition</DropdownMenuItem>
-                      <DropdownMenuItem onSelect={() => onAddNode("multiply")}>Multiply</DropdownMenuItem>
-                      <DropdownMenuItem onSelect={() => onAddNode("result")}>Result</DropdownMenuItem>
+                    <DropdownMenuContent side="right" align="start">
+                      <DropdownMenuItem onSelect={() => onAddNode("number")}>数值</DropdownMenuItem>
+                      <DropdownMenuItem onSelect={() => onAddNode("add")}>加法</DropdownMenuItem>
+                      <DropdownMenuItem onSelect={() => onAddNode("multiply")}>乘法</DropdownMenuItem>
+                      <DropdownMenuItem onSelect={() => onAddNode("result")}>结果</DropdownMenuItem>
                     </DropdownMenuContent>
                   </DropdownMenu>
                 </div>
