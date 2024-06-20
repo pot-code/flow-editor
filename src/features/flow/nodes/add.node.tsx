@@ -1,9 +1,10 @@
 import { Badge } from "@/components/ui/badge"
-import { Card, CardContent, CardHeader } from "@/components/ui/card"
 import { Separator } from "@/components/ui/separator"
+import { Plus } from "@phosphor-icons/react"
 import { isNil } from "lodash-es"
 import { NodeProps, Position } from "reactflow"
 import InputHandle from "../editor/input-handle"
+import { Node, NodeContent, NodeHeader } from "../editor/node"
 import OutputHandle from "../editor/output-handle"
 import useHandle from "../editor/use-handle"
 
@@ -16,23 +17,30 @@ const Add = memo<NodeProps<{ i1?: number; i2?: number; o?: number }>>(({ id, isC
   }, [])
 
   return (
-    <Card>
-      <CardHeader>加法</CardHeader>
+    <Node>
+      <NodeHeader>
+        <div className="flex items-center gap-2">
+          <Plus />
+          <span>加法</span>
+        </div>
+      </NodeHeader>
       <Separator />
-      <CardContent className="flex pt-4 flex-col gap-2">
-        <Badge variant={isHandleConnected(id, "i1") ? "default" : "secondary"}>Input: {data.i1 ?? "空数据"}</Badge>
-        <Badge variant={isHandleConnected(id, "i2") ? "default" : "secondary"}>Input: {data.i2 ?? "空数据"}</Badge>
-      </CardContent>
-      <InputHandle id="i1" position={Position.Left} style={{ top: "auto", bottom: 45 }} />
-      <InputHandle id="i2" position={Position.Left} style={{ top: "auto", bottom: 15 }} />
-      <OutputHandle
-        id="o"
-        value={effect(data)}
-        position={Position.Right}
-        style={{ top: "auto", bottom: 30 }}
-        isConnectable={isConnectable}
-      />
-    </Card>
+      <NodeContent className="flex flex-col gap-2">
+        <div className="relative">
+          <div className="px-4">
+            <Badge variant={isHandleConnected(id, "i1") ? "default" : "secondary"}>Input: {data.i1 ?? "空数据"}</Badge>
+          </div>
+          <InputHandle id="i1" position={Position.Left} />
+        </div>
+        <div className="relative">
+          <div className="px-4">
+            <Badge variant={isHandleConnected(id, "i2") ? "default" : "secondary"}>Input: {data.i2 ?? "空数据"}</Badge>
+          </div>
+          <InputHandle id="i2" position={Position.Left} />
+        </div>
+      </NodeContent>
+      <OutputHandle id="o" value={effect(data)} position={Position.Right} isConnectable={isConnectable} />
+    </Node>
   )
 })
 

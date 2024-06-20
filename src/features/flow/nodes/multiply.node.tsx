@@ -1,9 +1,10 @@
 import { Badge } from "@/components/ui/badge"
-import { Card, CardContent, CardHeader } from "@/components/ui/card"
 import { Separator } from "@/components/ui/separator"
+import { X } from "@phosphor-icons/react"
 import { isNil } from "lodash-es"
 import { NodeProps, Position } from "reactflow"
 import InputHandle from "../editor/input-handle"
+import { Node, NodeContent, NodeHeader } from "../editor/node"
 import OutputHandle from "../editor/output-handle"
 import useHandle from "../editor/use-handle"
 
@@ -16,21 +17,30 @@ const Multiply = memo<NodeProps<{ i1?: number; i2?: number; o?: number }>>(({ id
   }, [])
 
   return (
-    <Card>
-      <CardHeader>乘法</CardHeader>
+    <Node>
+      <NodeHeader>
+        <div className="flex items-center gap-2">
+          <X />
+          <span>乘法</span>
+        </div>
+      </NodeHeader>
       <Separator />
-      <CardContent className="flex pt-4 flex-col gap-2">
+      <NodeContent className="flex flex-col gap-2">
         <div className="relative">
-          <Badge variant={isHandleConnected(id, "i1") ? "default" : "secondary"}>Input: {data.i1 ?? "空数据"}</Badge>
-          <InputHandle id="i1" position={Position.Left} style={{}} />
+          <div className="px-4">
+            <Badge variant={isHandleConnected(id, "i1") ? "default" : "secondary"}>Input: {data.i1 ?? "空数据"}</Badge>
+          </div>
+          <InputHandle id="i1" position={Position.Left} />
         </div>
         <div className="relative">
-          <Badge variant={isHandleConnected(id, "i2") ? "default" : "secondary"}>Input: {data.i2 ?? "空数据"}</Badge>
-          <InputHandle id="i2" position={Position.Left} style={{}} />
+          <div className="px-4">
+            <Badge variant={isHandleConnected(id, "i2") ? "default" : "secondary"}>Input: {data.i2 ?? "空数据"}</Badge>
+          </div>
+          <InputHandle id="i2" position={Position.Left} />
         </div>
-      </CardContent>
+      </NodeContent>
       <OutputHandle id="o" value={effect(data)} position={Position.Right} isConnectable={isConnectable} />
-    </Card>
+    </Node>
   )
 })
 

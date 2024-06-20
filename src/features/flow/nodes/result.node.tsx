@@ -1,19 +1,25 @@
-import { Card, CardContent, CardHeader } from "@/components/ui/card"
+import { NodeHeader, NodeContent, Node } from "../editor/node"
 import { Input } from "@/components/ui/input"
 import { Separator } from "@/components/ui/separator"
 import { NodeProps, Position } from "reactflow"
 import InputHandle from "../editor/input-handle"
+import { Equals } from "@phosphor-icons/react"
 
 const Result = memo<NodeProps>(({ data }) => {
   return (
-    <Card>
-      <CardHeader>结果</CardHeader>
+    <Node>
+      <NodeHeader>
+        <div className="flex items-center gap-2">
+          <Equals />
+          <span>结果</span>
+        </div>
+      </NodeHeader>
       <Separator />
-      <CardContent className="pt-4">
+      <NodeContent className="px-2">
         <Input disabled type="number" value={data.value} />
-      </CardContent>
+      </NodeContent>
       <InputHandle id="value" position={Position.Left} />
-    </Card>
+    </Node>
   )
 })
 
