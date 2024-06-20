@@ -1,84 +1,25 @@
 import { produce } from "immer"
-import { Connection, Edge, Node, ReactFlowInstance, addEdge, useEdgesState, useNodesState } from "reactflow"
-import { DataConnection } from "./data-flow-context"
-import { useDataFlowContext } from "./use-data-flow-context"
+import { Connection, Edge, Node, addEdge, useEdgesState, useNodesState } from "reactflow"
+import { DataControllerRef } from "./data-controller"
 
 export default function useGraph() {
-  const instanceRef = useRef<ReactFlowInstance>()
+  const controllerRef = useRef<DataControllerRef>(null!)
   const [nodes, setNodes, onNodesChange] = useNodesState([])
   const [edges, setEdges, onEdgesChange] = useEdgesState([])
-  const { getSource, removeSource } = useDataFlowContext()
-
-  const addConnection = useCallback(
-    (c: DataConnection) => {
-      const source = getSource(c.source!)
-      source.subscribe(c, (data) => {
-        setNodes(
-          produce((draft) => {
-            draft
-              .filter((node) => node.id === c.source)
-              .forEach((node) => {
-                node.data[c.sourceHandle!] = data
-              })
-            draft
-              .filter((node) => node.id === c.target)
-              .forEach((node) => {
-                node.data[c.targetHandle!] = data
-              })
-          }),
-        )
-      })
-    },
-    [getSource, setNodes],
-  )
-
-  const removeConnection = useCallback(
-    (c: DataConnection) => {
-      setNodes(
-        produce((draft) => {
-          draft
-            .filter((node) => node.id === c.source)
-            .forEach((node) => {
-              delete node.data[c.sourceHandle!]
-            })
-          draft
-            .filter((node) => node.id === c.target)
-            .forEach((node) => {
-              delete node.data[c.targetHandle!]
-            })
-        }),
-      )
-      const source = getSource(c.source!)
-      source.unsubscribe(c)
-    },
-    [getSource, setNodes],
-  )
 
   const onConnect = useCallback(
-    (params: Connection) => {
-      setEdges((eds) => addEdge(params, eds))
-      addConnection(params)
+    (c: Connection) => {
+      controllerRef.current.addConnection(c)
+      setEdges((eds) => addEdge(c, eds))
     },
-    [addConnection, setEdges],
+    [setEdges],
   )
 
-  const onNodesDelete = useCallback(
-    (nodes: Node[]) => {
-      nodes.forEach((node) => {
-        removeSource(node.id)
-      })
-    },
-    [removeSource],
-  )
-
-  const onEdgesDelete = useCallback(
-    (edges: Edge[]) => {
-      edges.forEach((edge) => {
-        removeConnection(edge)
-      })
-    },
-    [removeConnection],
-  )
+  const onEdgesDelete = useCallback((edges: Edge[]) => {
+    edges.forEach((edge) => {
+      controllerRef.current.removeConnection(edge as Connection)
+    })
+  }, [])
 
   // TODO: use DnD
   function addNode(nodeType: string) {
@@ -95,24 +36,16 @@ export default function useGraph() {
     )
   }
 
-  function setInstance(instance: ReactFlowInstance) {
-    instanceRef.current = instance
-  }
-
   return {
-    instanceRef,
+    controllerRef,
     nodes,
     edges,
     setEdges,
     setNodes,
     onNodesChange,
-    onNodesDelete,
     onEdgesChange,
     onEdgesDelete,
     onConnect,
     addNode,
-    addConnection,
-    removeConnection,
-    setInstance,
   }
 }

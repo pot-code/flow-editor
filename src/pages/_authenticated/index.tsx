@@ -16,7 +16,7 @@ import { useMutation } from "@tanstack/react-query"
 import { createFileRoute, useNavigate } from "@tanstack/react-router"
 import { toast } from "sonner"
 import { useForm } from "react-hook-form"
-import { DEFAULT_FLOW_NAME } from "@/features/flow/constatns"
+import { DEFAULT_FLOW_NAME } from "@/features/flow/constants"
 
 export const Route = createFileRoute("/_authenticated/")({
   component: Home,

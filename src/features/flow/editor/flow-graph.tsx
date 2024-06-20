@@ -5,6 +5,7 @@ import { Plus } from "@phosphor-icons/react"
 import ReactFlow, { Background, BackgroundVariant, Controls, MarkerType, Panel, ReactFlowJsonObject } from "reactflow"
 import { getNodeTypes } from "../nodes"
 import useGraph from "./use-graph"
+import DataController from "./data-controller"
 
 export type FlowGraphProps = {
   data?: FlowDetailData
@@ -20,49 +21,42 @@ const FlowGraph = forwardRef<FlowGraphHandle, FlowGraphProps>(({ data }, ref) =>
   const {
     nodes,
     edges,
-    instanceRef,
+    controllerRef,
     addNode,
-    addConnection,
-    setInstance,
     setEdges,
     setNodes,
     onNodesChange,
-    onNodesDelete,
     onEdgesChange,
     onEdgesDelete,
     onConnect,
   } = useGraph()
 
   const getFlowData = useCallback(() => {
-    return instanceRef.current?.toObject()
-  }, [instanceRef])
+    return controllerRef.current?.exportData()
+  }, [controllerRef])
 
   useEffect(() => {
     if (data && data.data) {
       const flow = JSON.parse(data.data)
       setNodes(flow.nodes || [])
       setEdges(flow.edges || [])
-      setTimeout(() => {
-        flow.edges.forEach((e: any) => {
-          addConnection(e)
-        })
+      flow.edges.forEach((e: any) => {
+        controllerRef.current.addConnection(e)
       })
     }
-  }, [addConnection, data, instanceRef, setEdges, setNodes])
+  }, [controllerRef, data, setEdges, setNodes])
 
   useImperativeHandle(ref, () => ({ getFlowData }), [getFlowData])
 
   return (
     <ReactFlow
       fitView
-      onInit={setInstance}
       className="bg-gray-50"
       nodes={nodes}
       edges={edges}
       nodeTypes={nodeTypes}
       onConnect={onConnect}
       onNodesChange={onNodesChange}
-      onNodesDelete={onNodesDelete}
       onEdgesChange={onEdgesChange}
       onEdgesDelete={onEdgesDelete}
       defaultEdgeOptions={{
@@ -95,6 +89,7 @@ const FlowGraph = forwardRef<FlowGraphHandle, FlowGraphProps>(({ data }, ref) =>
       </Panel>
       <Controls />
       <Background variant={BackgroundVariant.Dots} />
+      <DataController ref={controllerRef} />
     </ReactFlow>
   )
 })

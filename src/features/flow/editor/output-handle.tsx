@@ -11,15 +11,17 @@ export interface OutputHandleProps extends Omit<HandleProps, "type"> {
 export default function OutputHandle({ id, value, ...rest }: OutputHandleProps) {
   const nodeId = useNodeId()!
   const { getSource } = useDataFlowContext()
-  const dataSource = useMemo(() => getSource(nodeId), [getSource, nodeId])
+  const dataSource = useMemo(() => getSource({ nodeId, handleId: id }), [getSource, id, nodeId])
 
   const onConnect = useCallback(() => {
     dataSource.publish(value)
-  }, [dataSource, value])
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [])
 
   useEffect(() => {
     dataSource.publish(value)
-  }, [dataSource, id, nodeId, value])
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [value])
 
   return <Handle type="source" id={id} onConnect={onConnect} {...rest} />
 }

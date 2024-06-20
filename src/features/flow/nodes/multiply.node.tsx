@@ -5,10 +5,10 @@ import { isNil } from "lodash-es"
 import { NodeProps, Position } from "reactflow"
 import InputHandle from "../editor/input-handle"
 import OutputHandle from "../editor/output-handle"
-import useNode from "../editor/use-node"
+import useHandle from "../editor/use-handle"
 
 const Multiply = memo<NodeProps<{ i1?: number; i2?: number; o?: number }>>(({ id, isConnectable, data }) => {
-  const { isHandleConnected } = useNode(id)
+  const { isHandleConnected } = useHandle()
 
   const effect = useCallback((d: typeof data) => {
     if (isNil(d.i1) || isNil(d.i2)) return undefined
@@ -20,11 +20,15 @@ const Multiply = memo<NodeProps<{ i1?: number; i2?: number; o?: number }>>(({ id
       <CardHeader>乘法</CardHeader>
       <Separator />
       <CardContent className="flex pt-4 flex-col gap-2">
-        <Badge variant={isHandleConnected("i1") ? "default" : "secondary"}>Input: {data.i1 ?? "空数据"}</Badge>
-        <Badge variant={isHandleConnected("i2") ? "default" : "secondary"}>Input: {data.i2 ?? "空数据"}</Badge>
+        <div className="relative">
+          <Badge variant={isHandleConnected(id, "i1") ? "default" : "secondary"}>Input: {data.i1 ?? "空数据"}</Badge>
+          <InputHandle id="i1" position={Position.Left} style={{}} />
+        </div>
+        <div className="relative">
+          <Badge variant={isHandleConnected(id, "i2") ? "default" : "secondary"}>Input: {data.i2 ?? "空数据"}</Badge>
+          <InputHandle id="i2" position={Position.Left} style={{}} />
+        </div>
       </CardContent>
-      <InputHandle id="i1" position={Position.Left} style={{ top: "auto", bottom: 65 }} />
-      <InputHandle id="i2" position={Position.Left} style={{ top: "auto", bottom: 25 }} />
       <OutputHandle id="o" value={effect(data)} position={Position.Right} isConnectable={isConnectable} />
     </Card>
   )
