@@ -13,15 +13,13 @@ export default function OutputHandle({ id, value, ...rest }: OutputHandleProps) 
   const { getSource } = useDataFlowContext()
   const dataSource = useMemo(() => getSource({ nodeId, handleId: id }), [getSource, id, nodeId])
 
-  const onConnect = useCallback(() => {
+  function onConnect() {
     dataSource.publish(value)
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [])
+  }
 
   useEffect(() => {
     dataSource.publish(value)
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [value])
+  }, [dataSource, value])
 
   return <Handle type="source" id={id} onConnect={onConnect} {...rest} />
 }
