@@ -3,7 +3,7 @@ import { Button } from "@/components/ui/button"
 import Loading from "@/components/ui/loading"
 import { DEFAULT_FLOW_NAME } from "@/features/flow/constants"
 import DataFlowProvider from "@/features/flow/editor/data-flow-provider"
-import FlowGraph, { FlowGraphHandle } from "@/features/flow/editor/flow-graph"
+import FlowGraph, { FlowGraphRef } from "@/features/flow/editor/flow-graph"
 import NameInput from "@/features/flow/editor/name-input"
 import { extractErrorMessage } from "@/lib/http"
 import { delayedPromise } from "@/utils/promise"
@@ -22,7 +22,7 @@ export const Route = createFileRoute("/_authenticated/editor/$flowId")({
 
 function FlowEditor() {
   const navigate = useNavigate()
-  const graphRef = useRef<FlowGraphHandle>(null)
+  const graphRef = useRef<FlowGraphRef>(null!)
 
   const flowId = Route.useParams().flowId
   const [title, setTitle] = useState("")
@@ -45,12 +45,10 @@ function FlowEditor() {
   })
 
   function onSave() {
-    if (graphRef.current) {
-      updateFlowMutation.mutate({
-        data: JSON.stringify(graphRef.current.getFlowData()),
-        title,
-      })
-    }
+    updateFlowMutation.mutate({
+      data: JSON.stringify(graphRef.current.getFlowData()),
+      title,
+    })
   }
 
   function onChangeGraphName(name: string) {

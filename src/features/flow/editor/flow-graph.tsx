@@ -11,13 +11,13 @@ export type FlowGraphProps = {
   data?: FlowDetailData
 }
 
-export type FlowGraphHandle = {
+export type FlowGraphRef = {
   getFlowData: () => ReactFlowJsonObject<any, any> | undefined
 }
 
 const nodeTypes = getNodeTypes()
 
-const FlowGraph = forwardRef<FlowGraphHandle, FlowGraphProps>(({ data }, ref) => {
+const FlowGraph = forwardRef<FlowGraphRef, FlowGraphProps>(({ data }, ref) => {
   const {
     nodes,
     edges,

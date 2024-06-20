@@ -16,7 +16,7 @@ const Result = memo<NodeProps>(({ data }) => {
       </NodeHeader>
       <Separator />
       <NodeContent className="px-2">
-        <Input disabled type="number" value={data.value} />
+        <Input disabled type="number" value={data.value || 0} />
       </NodeContent>
       <InputHandle id="value" position={Position.Left} />
     </Node>

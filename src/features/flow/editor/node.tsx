@@ -9,7 +9,7 @@ Node.displayName = "Node"
 
 const NodeHeader = React.forwardRef<HTMLDivElement, React.HTMLAttributes<HTMLDivElement>>(
   ({ className, ...props }, ref) => (
-    <div ref={ref} className={cn("flex flex-col text-sm space-y-1.5 p-2", className)} {...props} />
+    <div ref={ref} className={cn("flex flex-col text-sm space-y-1.5 p-2 font-bold", className)} {...props} />
   ),
 )
 NodeHeader.displayName = "NodeHeader"

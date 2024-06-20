@@ -11,6 +11,7 @@ export interface DataControllerRef {
   exportData: () => ReactFlowJsonObject<any, any>
 }
 
+// eslint-disable-next-line no-empty-pattern
 const DataController = forwardRef<DataControllerRef, DataControllerProps>(({}, ref) => {
   const { getSource } = useDataFlowContext()
   const { setNodes, toObject } = useReactFlow()
@@ -21,6 +22,7 @@ const DataController = forwardRef<DataControllerRef, DataControllerProps>(({}, r
       source.subscribe({ nodeId: c.target, handleId: c.targetHandle }, (data) => {
         setNodes(
           produce((draft) => {
+            // FIXME: 批量修改节点数据导致有节点数据不更新
             draft
               .filter((node) => node.id === c.target)
               .forEach((node) => {
@@ -47,7 +49,7 @@ const DataController = forwardRef<DataControllerRef, DataControllerProps>(({}, r
           draft
             .filter((node) => node.id === c.target)
             .forEach((node) => {
-              delete node.data[c.targetHandle!]
+              node.data[c.targetHandle!] = undefined
             })
         }),
       )
