@@ -1,6 +1,9 @@
 import { FlowDetailData } from "@/api/model"
 import { getNodeTypes } from "../nodes"
 import { Graph } from "@antv/x6"
+import { Button } from "@/components/ui/button"
+import { Plus } from "@phosphor-icons/react"
+import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from "@/components/ui/dropdown-menu"
 
 export type FlowGraphProps = {
   data?: FlowDetailData
@@ -24,7 +27,6 @@ const FlowGraph = forwardRef<FlowGraphRef, FlowGraphProps>(({ data }, ref) => {
       height: 40,
       label: "hello",
       attrs: {
-        // body 是选择器名称，选中的是 rect 元素
         body: {
           stroke: "#8f8f8f",
           strokeWidth: 1,
@@ -58,7 +60,6 @@ const FlowGraph = forwardRef<FlowGraphRef, FlowGraphProps>(({ data }, ref) => {
       shape: "edge",
       source: "node1",
       target: "node2",
-      label: "x6",
       attrs: {
         // line 是选择器名称，选中的边的 path 元素
         line: {
@@ -83,6 +84,7 @@ const FlowGraph = forwardRef<FlowGraphRef, FlowGraphProps>(({ data }, ref) => {
       },
       grid: {
         visible: true,
+        size: 20,
       },
     })
     graph.fromJSON({
@@ -98,7 +100,26 @@ const FlowGraph = forwardRef<FlowGraphRef, FlowGraphProps>(({ data }, ref) => {
 
   useImperativeHandle(ref, () => ({ getFlowData }), [getFlowData])
 
-  return <div className="h-full w-full" ref={containerRef} />
+  return (
+    <div className="h-full w-full relative">
+      <div className="h-full w-full" ref={containerRef} />
+      <div className="absolute top-8 left-8">
+        <DropdownMenu>
+          <DropdownMenuTrigger asChild>
+            <Button size="icon" color="primary">
+              <Plus />
+            </Button>
+          </DropdownMenuTrigger>
+          <DropdownMenuContent side="right" align="start">
+            <DropdownMenuItem>数值</DropdownMenuItem>
+            <DropdownMenuItem>加法</DropdownMenuItem>
+            <DropdownMenuItem>乘法</DropdownMenuItem>
+            <DropdownMenuItem>结果</DropdownMenuItem>
+          </DropdownMenuContent>
+        </DropdownMenu>
+      </div>
+    </div>
+  )
 })
 
 export default FlowGraph
