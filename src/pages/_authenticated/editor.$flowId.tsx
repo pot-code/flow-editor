@@ -2,7 +2,6 @@ import { getFlow, updateFlow } from "@/api/flow"
 import { Button } from "@/components/ui/button"
 import Loading from "@/components/ui/loading"
 import { DEFAULT_FLOW_NAME } from "@/features/flow/constants"
-import DataFlowProvider from "@/features/flow/editor/data-flow-provider"
 import FlowGraph, { FlowGraphRef } from "@/features/flow/editor/flow-graph"
 import NameInput from "@/features/flow/editor/name-input"
 import { extractErrorMessage } from "@/lib/http"
@@ -12,7 +11,6 @@ import { ArrowLeft } from "@phosphor-icons/react"
 import { useMutation, useQuery } from "@tanstack/react-query"
 import { createFileRoute, useNavigate } from "@tanstack/react-router"
 import { isEmpty } from "lodash-es"
-import { ReactFlowProvider } from "reactflow"
 import { toast } from "sonner"
 
 export const Route = createFileRoute("/_authenticated/editor/$flowId")({
@@ -76,11 +74,7 @@ function FlowEditor() {
         </div>
       </nav>
       <div className="flex-grow flex">
-        <DataFlowProvider>
-          <ReactFlowProvider>
-            <FlowGraph ref={graphRef} data={data} />
-          </ReactFlowProvider>
-        </DataFlowProvider>
+        <FlowGraph ref={graphRef} data={data} />
       </div>
       <Loading title="保存中" loading={updateFlowMutation.isPending} />
       <Loading title="载入中" loading={isLoading} />

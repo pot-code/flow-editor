@@ -1,97 +1,104 @@
 import { FlowDetailData } from "@/api/model"
-import { Button } from "@/components/ui/button"
-import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from "@/components/ui/dropdown-menu"
-import { Plus } from "@phosphor-icons/react"
-import ReactFlow, { Background, BackgroundVariant, Controls, MarkerType, Panel, ReactFlowJsonObject } from "reactflow"
 import { getNodeTypes } from "../nodes"
-import useGraph from "./use-graph"
-import DataController from "./data-controller"
+import { Graph } from "@antv/x6"
 
 export type FlowGraphProps = {
   data?: FlowDetailData
 }
 
 export type FlowGraphRef = {
-  getFlowData: () => ReactFlowJsonObject<any, any> | undefined
+  getFlowData: () => string
 }
 
 const nodeTypes = getNodeTypes()
 
 const FlowGraph = forwardRef<FlowGraphRef, FlowGraphProps>(({ data }, ref) => {
-  const {
-    nodes,
-    edges,
-    controllerRef,
-    addNode,
-    setEdges,
-    setNodes,
-    onNodesChange,
-    onEdgesChange,
-    onEdgesDelete,
-    onConnect,
-  } = useGraph()
+  const containerRef = useRef<HTMLDivElement>(null!)
+  const [nodes, setNodes] = useState([
+    {
+      id: "node1",
+      shape: "rect",
+      x: 40,
+      y: 40,
+      width: 100,
+      height: 40,
+      label: "hello",
+      attrs: {
+        // body 是选择器名称，选中的是 rect 元素
+        body: {
+          stroke: "#8f8f8f",
+          strokeWidth: 1,
+          fill: "#fff",
+          rx: 6,
+          ry: 6,
+        },
+      },
+    },
+    {
+      id: "node2",
+      shape: "rect",
+      x: 160,
+      y: 180,
+      width: 100,
+      height: 40,
+      label: "world",
+      attrs: {
+        body: {
+          stroke: "#8f8f8f",
+          strokeWidth: 1,
+          fill: "#fff",
+          rx: 6,
+          ry: 6,
+        },
+      },
+    },
+  ])
+  const [edges, setEdges] = useState([
+    {
+      shape: "edge",
+      source: "node1",
+      target: "node2",
+      label: "x6",
+      attrs: {
+        // line 是选择器名称，选中的边的 path 元素
+        line: {
+          stroke: "#8f8f8f",
+          strokeWidth: 1,
+        },
+      },
+    },
+  ])
 
   const getFlowData = useCallback(() => {
-    return controllerRef.current?.exportData()
-  }, [controllerRef])
+    return ""
+  }, [])
 
   useEffect(() => {
-    if (data && data.data) {
-      const flow = JSON.parse(data.data)
-      setNodes(flow.nodes || [])
-      setEdges(flow.edges || [])
-      flow.edges.forEach((e: any) => {
-        controllerRef.current.addConnection(e)
-      })
+    const graph = new Graph({
+      container: containerRef.current,
+      panning: true,
+      mousewheel: true,
+      background: {
+        color: "#fff",
+      },
+      grid: {
+        visible: true,
+      },
+    })
+    graph.fromJSON({
+      nodes,
+      edges,
+    })
+    graph.centerContent()
+
+    return () => {
+      graph.dispose()
     }
-  }, [controllerRef, data, setEdges, setNodes])
+  }, [edges, nodes])
 
   useImperativeHandle(ref, () => ({ getFlowData }), [getFlowData])
 
-  return (
-    <ReactFlow
-      fitView
-      className="bg-gray-50"
-      nodes={nodes}
-      edges={edges}
-      nodeTypes={nodeTypes}
-      onConnect={onConnect}
-      onNodesChange={onNodesChange}
-      onEdgesChange={onEdgesChange}
-      onEdgesDelete={onEdgesDelete}
-      defaultEdgeOptions={{
-        animated: true,
-        markerEnd: {
-          type: MarkerType.ArrowClosed,
-        },
-      }}
-      fitViewOptions={{
-        minZoom: 1,
-        maxZoom: 1,
-      }}
-    >
-      <Panel position="top-left">
-        <div className="flex flex-col gap-2 items-center">
-          <DropdownMenu>
-            <DropdownMenuTrigger asChild>
-              <Button size="icon" color="primary">
-                <Plus />
-              </Button>
-            </DropdownMenuTrigger>
-            <DropdownMenuContent side="right" align="start">
-              <DropdownMenuItem onSelect={() => addNode("number")}>数值</DropdownMenuItem>
-              <DropdownMenuItem onSelect={() => addNode("add")}>加法</DropdownMenuItem>
-              <DropdownMenuItem onSelect={() => addNode("multiply")}>乘法</DropdownMenuItem>
-              <DropdownMenuItem onSelect={() => addNode("result")}>结果</DropdownMenuItem>
-            </DropdownMenuContent>
-          </DropdownMenu>
-        </div>
-      </Panel>
-      <Controls />
-      <Background variant={BackgroundVariant.Dots} />
-      <DataController ref={controllerRef} />
-    </ReactFlow>
-  )
+  return <div className="h-full w-full" ref={containerRef} />
 })
 
 export default FlowGraph

@@ -4,6 +4,7 @@
   "private": true,
   "type": "module",
   "dependencies": {
+    "@antv/x6": "^2.18.1",
     "@emotion/react": "^11.11.4",
     "@logto/react": "^3.0.10",
     "@phosphor-icons/react": "^2.1.6",
@@ -32,12 +33,10 @@
     "react": "^18.2.0",
     "react-dom": "^18.3.1",
     "react-hook-form": "^7.51.5",
-    "reactflow": "^11.11.3",
     "rxjs": "^7.8.1",
     "sonner": "^1.5.0",
     "tailwind-merge": "^2.3.0",
-    "tailwindcss-animate": "^1.0.7",
-    "zustand": "^4.5.2"
+    "tailwindcss-animate": "^1.0.7"
   },
   "devDependencies": {
     "@playwright/test": "^1.43.1",
