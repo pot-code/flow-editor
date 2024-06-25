@@ -44,7 +44,7 @@ function FlowEditor() {
 
   function onSave() {
     updateFlowMutation.mutate({
-      data: JSON.stringify(graphRef.current.getFlowData()),
+      data: graphRef.current.getFlowData(),
       title,
     })
   }

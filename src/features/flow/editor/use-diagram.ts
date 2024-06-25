@@ -16,9 +16,26 @@ export default function useDiagram() {
         visible: true,
         size: 20,
       },
+      connecting: {
+        allowBlank: false,
+        allowLoop: false,
+        allowNode: false,
+        allowEdge: false,
+        highlight: true,
+        snap: {
+          radius: 20,
+        },
+        validateConnection: ({ targetMagnet }) => {
+          return targetMagnet?.getAttribute("port-group") !== "output"
+        },
+      },
     })
 
     graphRef.current = graph
+
+    graph.on("edge:dblclick", ({ edge }) => {
+      graph.removeEdge(edge)
+    })
 
     return () => {
       graph.dispose()
@@ -39,5 +56,10 @@ export default function useDiagram() {
     return graphRef.current.toJSON()
   }
 
-  return { containerRef, render, centerView, exportGraph }
+  function addNode(node: any) {
+    const graph = graphRef.current
+    graph.addNode(node)
+  }
+
+  return { containerRef, render, centerView, exportGraph, addNode }
 }
