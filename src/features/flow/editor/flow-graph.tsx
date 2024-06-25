@@ -4,8 +4,12 @@ import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigge
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip"
 import { ArrowsInSimple, Plus } from "@phosphor-icons/react"
 import useDiagram from "./use-diagram"
-import { getShapes } from "./nodes"
+import { getShapes } from "./shape"
 import { Portal, register } from "@antv/x6-react-shape"
+
+getShapes().forEach(register)
+
+const PortalProvider = Portal.getProvider()
 
 export type FlowGraphProps = {
   data?: FlowDetailData
@@ -14,10 +18,6 @@ export type FlowGraphProps = {
 export type FlowGraphRef = {
   getFlowData: () => string
 }
-
-getShapes().forEach(register)
-
-const PortalProvider = Portal.getProvider()
 
 const FlowGraph = forwardRef<FlowGraphRef, FlowGraphProps>(({ data }, ref) => {
   const { containerRef, exportGraph, render, centerView, addNode } = useDiagram()
