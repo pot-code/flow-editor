@@ -1,19 +1,42 @@
 import { AnimatePresence, motion } from "framer-motion"
 import * as React from "react"
+import { useClickAway } from "@uidotdev/usehooks"
 
 import { cn } from "@/utils/shad"
 import { Copy, Trash } from "@phosphor-icons/react"
 
-const NodeContainer = React.forwardRef<HTMLDivElement, React.HTMLAttributes<HTMLDivElement>>(
-  ({ className, ...props }, ref) => (
-    <div
-      ref={ref}
-      className={cn("border rounded relative bg-card text-card-foreground shadow", className)}
-      {...props}
-    />
-  ),
-)
-NodeContainer.displayName = "NodeContainer"
+const NodeContainerProvider = React.createContext(false)
+
+type NodeContainerProps = React.ComponentPropsWithoutRef<"div">
+
+function NodeContainer({ className, onClick, ...props }: NodeContainerProps) {
+  const [focus, setFocus] = React.useState(true)
+  const ref = useClickAway<HTMLDivElement>(() => {
+    setFocus(false)
+  })
+
+  function onFocus(e: React.MouseEvent<HTMLDivElement>) {
+    setFocus(true)
+    onClick?.(e)
+  }
+
+  return (
+    <NodeContainerProvider.Provider value={focus}>
+      <div
+        ref={ref}
+        onClick={onFocus}
+        className={cn(
+          "border rounded relative bg-card text-card-foreground shadow",
+          {
+            "ring-1 ring-primary": focus,
+          },
+          className,
+        )}
+        {...props}
+      />
+    </NodeContainerProvider.Provider>
+  )
+}
 
 type ActionButtonProps = React.HTMLAttributes<HTMLButtonElement>
 
@@ -22,12 +45,13 @@ function ActionButton({ className, ...props }: ActionButtonProps) {
 }
 
 type NodeActionsProps = {
-  visible?: boolean
   onDelete?: () => void
   onCopy?: () => void
 }
 
-function NodeActions({ visible, onDelete, onCopy }: NodeActionsProps) {
+function NodeActions({ onDelete, onCopy }: NodeActionsProps) {
+  const visible = useContext(NodeContainerProvider)
+
   return (
     <AnimatePresence>
       {visible && (

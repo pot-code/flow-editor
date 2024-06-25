@@ -8,7 +8,6 @@ import { NodeProps } from "./typings"
 // eslint-disable-next-line react-refresh/only-export-components
 function NumberInput({ node }: NodeProps) {
   const [value, setValue] = useState(0)
-  const [visible, setVisible] = useState(false)
 
   function onChange(e: React.ChangeEvent<HTMLInputElement>) {
     setValue(Number(e.target.value))
@@ -19,8 +18,8 @@ function NumberInput({ node }: NodeProps) {
   }
 
   return (
-    <NodeContainer onMouseEnter={() => setVisible(true)} onMouseLeave={() => setVisible(false)}>
-      <NodeActions visible={visible} onDelete={onDelete} />
+    <NodeContainer>
+      <NodeActions onDelete={onDelete} />
       <NodeHeader>
         <div className="flex items-center gap-2">
           <Hash />
