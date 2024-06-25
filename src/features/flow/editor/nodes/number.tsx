@@ -1,8 +1,8 @@
 import { Input } from "@/components/ui/input"
 import { Separator } from "@/components/ui/separator"
 import { ReactShapeConfig } from "@antv/x6-react-shape"
-import { Hash } from "@phosphor-icons/react"
-import { NodeActions, NodeContainer, NodeContent, NodeHeader } from "./layout"
+import { Hash, Trash } from "@phosphor-icons/react"
+import { ActionButton, NodeActions, NodeContainer, NodeContent, NodeHeader } from "./layout"
 import { NodeProps } from "./typings"
 
 // eslint-disable-next-line react-refresh/only-export-components
@@ -19,7 +19,11 @@ function NumberInput({ node }: NodeProps) {
 
   return (
     <NodeContainer>
-      <NodeActions onDelete={onDelete} />
+      <NodeActions>
+        <ActionButton className="bg-destructive" onClick={onDelete}>
+          <Trash size={14} className="text-destructive-foreground" />
+        </ActionButton>
+      </NodeActions>
       <NodeHeader>
         <div className="flex items-center gap-2">
           <Hash />
@@ -35,10 +39,10 @@ function NumberInput({ node }: NodeProps) {
 }
 
 export default {
+  component: NumberInput,
   shape: "number",
   width: 200,
   effect: ["data"],
-  component: NumberInput,
   ports: {
     groups: {
       output: {

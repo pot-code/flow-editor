@@ -11,6 +11,7 @@ import RefreshToken from "./features/auth/refresh-token"
 import App from "./app"
 import setup from "./setup"
 import queryClient from "./query-client"
+import { TooltipProvider } from "./components/ui/tooltip"
 
 import "./styles/main.scss"
 
@@ -26,12 +27,14 @@ setup().then(() =>
           resources: [import.meta.env.VITE_LOGTO_API_RESOURCE],
         }}
       >
-        <QueryClientProvider client={queryClient}>
-          <App />
-          <RefreshToken />
-          {/* <ReactQueryDevtools initialIsOpen={false} /> */}
-          {/* <TanStackRouterDevtools router={router} /> */}
-        </QueryClientProvider>
+        <TooltipProvider>
+          <QueryClientProvider client={queryClient}>
+            <App />
+            <RefreshToken />
+            {/* <ReactQueryDevtools initialIsOpen={false} /> */}
+            {/* <TanStackRouterDevtools router={router} /> */}
+          </QueryClientProvider>
+        </TooltipProvider>
       </LogtoProvider>
       <Toaster richColors toastOptions={{ closeButton: true }} />
     </React.StrictMode>,

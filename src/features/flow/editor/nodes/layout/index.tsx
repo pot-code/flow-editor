@@ -1,30 +1,28 @@
+import { useClickAway } from "@uidotdev/usehooks"
 import { AnimatePresence, motion } from "framer-motion"
 import * as React from "react"
-import { useClickAway } from "@uidotdev/usehooks"
 
 import { cn } from "@/utils/shad"
-import { Copy, Trash } from "@phosphor-icons/react"
 
 const NodeContainerProvider = React.createContext(false)
 
 type NodeContainerProps = React.ComponentPropsWithoutRef<"div">
 
-function NodeContainer({ className, onClick, ...props }: NodeContainerProps) {
-  const [focus, setFocus] = React.useState(true)
+function NodeContainer({ className, onMouseDown, ...props }: NodeContainerProps) {
+  const [focus, setFocus] = React.useState(false)
   const ref = useClickAway<HTMLDivElement>(() => {
     setFocus(false)
   })
 
   function onFocus(e: React.MouseEvent<HTMLDivElement>) {
     setFocus(true)
-    onClick?.(e)
+    onMouseDown?.(e)
   }
 
   return (
     <NodeContainerProvider.Provider value={focus}>
       <div
         ref={ref}
-        onClick={onFocus}
         className={cn(
           "border rounded relative bg-card text-card-foreground shadow",
           {
@@ -32,6 +30,7 @@ function NodeContainer({ className, onClick, ...props }: NodeContainerProps) {
           },
           className,
         )}
+        onMouseDown={onFocus}
         {...props}
       />
     </NodeContainerProvider.Provider>
@@ -45,11 +44,10 @@ function ActionButton({ className, ...props }: ActionButtonProps) {
 }
 
 type NodeActionsProps = {
-  onDelete?: () => void
-  onCopy?: () => void
+  children?: React.ReactNode
 }
 
-function NodeActions({ onDelete, onCopy }: NodeActionsProps) {
+function NodeActions({ children }: NodeActionsProps) {
   const visible = useContext(NodeContainerProvider)
 
   return (
@@ -61,12 +59,7 @@ function NodeActions({ onDelete, onCopy }: NodeActionsProps) {
           animate={{ opacity: 1 }}
           exit={{ opacity: 0 }}
         >
-          <ActionButton className="bg-primary" onClick={onCopy}>
-            <Copy size={14} className="text-primary-foreground" />
-          </ActionButton>
-          <ActionButton className="bg-destructive" onClick={onDelete}>
-            <Trash size={14} className="text-destructive-foreground" />
-          </ActionButton>
+          {children}
         </motion.div>
       )}
     </AnimatePresence>
@@ -90,4 +83,4 @@ const NodeFooter = React.forwardRef<HTMLDivElement, React.HTMLAttributes<HTMLDiv
 )
 NodeFooter.displayName = "NodeFooter"
 
-export { NodeActions, NodeContainer, NodeContent, NodeFooter, NodeHeader }
+export { ActionButton, NodeActions, NodeContainer, NodeContent, NodeFooter, NodeHeader }

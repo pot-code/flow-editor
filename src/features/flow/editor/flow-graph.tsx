@@ -1,11 +1,11 @@
 import { FlowDetailData } from "@/api/model"
 import { Button } from "@/components/ui/button"
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from "@/components/ui/dropdown-menu"
-import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip"
-import { ArrowsInSimple, Plus } from "@phosphor-icons/react"
-import useDiagram from "./use-diagram"
-import { getShapes } from "./shape"
+import { Tooltip, TooltipContent, TooltipTrigger } from "@/components/ui/tooltip"
 import { Portal, register } from "@antv/x6-react-shape"
+import { ArrowsInSimple, Plus } from "@phosphor-icons/react"
+import { getShapes } from "./shape"
+import useDiagram from "./use-diagram"
 
 getShapes().forEach(register)
 
@@ -55,16 +55,14 @@ const FlowGraph = forwardRef<FlowGraphRef, FlowGraphProps>(({ data }, ref) => {
       </div>
       <div className="absolute left-4 bottom-4 bg-white shadow-md border rounded-lg">
         <div className="flex flex-col">
-          <TooltipProvider>
-            <Tooltip>
-              <TooltipTrigger asChild>
-                <button className="p-1" onClick={centerView}>
-                  <ArrowsInSimple weight="fill" />
-                </button>
-              </TooltipTrigger>
-              <TooltipContent side="right">画布居中</TooltipContent>
-            </Tooltip>
-          </TooltipProvider>
+          <Tooltip>
+            <TooltipTrigger asChild>
+              <button className="p-1" onClick={centerView}>
+                <ArrowsInSimple weight="fill" />
+              </button>
+            </TooltipTrigger>
+            <TooltipContent side="right">画布居中</TooltipContent>
+          </Tooltip>
         </div>
       </div>
     </div>
