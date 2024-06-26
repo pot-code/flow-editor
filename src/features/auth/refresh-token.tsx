@@ -13,14 +13,13 @@ export default function RefreshToken() {
   })
 
   useEffect(() => {
-    const sub = httpErrorStream.pipe(debounceTime(200)).subscribe((err) => {
-      if (axios.isAxiosError(err) && err.status === 401) {
+    const sub = httpErrorStream.pipe(debounceTime(200)).subscribe((error) => {
+      if (axios.isAxiosError(error) && error.response && error.response.status === 401) {
         refetch()
       }
     })
     return () => sub.unsubscribe()
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [data])
+  }, [data, refetch])
 
   if (data) {
     AXIOS_INSTANCE.defaults.headers.common["Authorization"] = `Bearer ${data}`

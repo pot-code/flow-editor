@@ -4,6 +4,7 @@ import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigge
 import { Tooltip, TooltipContent, TooltipTrigger } from "@/components/ui/tooltip"
 import { Portal, register } from "@antv/x6-react-shape"
 import { ArrowsInSimple, Plus } from "@phosphor-icons/react"
+import GraphContextProvider from "./graph-context"
 import { getShapes } from "./shape"
 import useDiagram from "./use-diagram"
 
@@ -20,7 +21,7 @@ export type FlowGraphRef = {
 }
 
 const FlowGraph = forwardRef<FlowGraphRef, FlowGraphProps>(({ data }, ref) => {
-  const { containerRef, exportGraph, render, centerView, addNode } = useDiagram()
+  const { containerRef, graphRef, exportGraph, render, centerView, addNode } = useDiagram()
 
   const getFlowData = useCallback(() => {
     return JSON.stringify(exportGraph())
@@ -31,12 +32,15 @@ const FlowGraph = forwardRef<FlowGraphRef, FlowGraphProps>(({ data }, ref) => {
   useEffect(() => {
     if (data && data.data) {
       render(data.data)
+      centerView()
     }
-  }, [data, render])
+  }, [centerView, data, render])
 
   return (
     <div className="h-full w-full relative">
-      <PortalProvider />
+      <GraphContextProvider graph={graphRef.current}>
+        <PortalProvider />
+      </GraphContextProvider>
       <div className="h-full w-full" ref={containerRef} />
       <div className="absolute top-4 left-4">
         <DropdownMenu>

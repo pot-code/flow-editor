@@ -71,5 +71,5 @@ export default function useDiagram() {
     graph.addNode(node)
   }
 
-  return { containerRef, render, centerView, exportGraph, addNode }
+  return { containerRef, graphRef, render, centerView, exportGraph, addNode }
 }
