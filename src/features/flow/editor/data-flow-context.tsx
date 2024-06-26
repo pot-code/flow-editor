@@ -1,30 +1,31 @@
 import React from "react"
-import { Subject, Unsubscribable } from "rxjs"
-
-export type NodeHandle = {
-  nodeId?: string | null
-  handleId?: string | null
-}
+import { BehaviorSubject, Unsubscribable } from "rxjs"
 
 class DataSource {
-  private sub = new Subject()
+  private sub = new BehaviorSubject<any>(undefined)
   private subscriptions = new Map<string, Unsubscribable>()
 
-  constructor(private readonly key: string) {}
+  constructor(readonly key: string) {}
 
   publish(data: any) {
     this.sub.next(data)
   }
 
-  subscribe(c: NodeHandle, cb: (data: any) => void) {
-    const key = this.getConnectionKey(c)
+  /**
+   * pipe data to target DataSource
+   * @param ds target DataSource
+   */
+  connect(ds: DataSource) {
+    this.subscribe(ds.key, ds.publish.bind(ds))
+  }
+
+  subscribe(key: string, cb: (data: any) => void) {
     if (!this.subscriptions.has(key)) {
       this.subscriptions.set(key, this.sub.subscribe(cb))
     }
   }
 
-  unsubscribe(c: NodeHandle) {
-    const key = this.getConnectionKey(c)
+  unsubscribe(key: string) {
     this.subscriptions.get(key)?.unsubscribe()
     this.subscriptions.delete(key)
   }
@@ -33,45 +34,39 @@ class DataSource {
     this.subscriptions.forEach((sub) => sub.unsubscribe())
   }
 
-  private getConnectionKey(c: NodeHandle) {
-    return `${this.key}->${c.nodeId}:${c.handleId}`
+  get source() {
+    return this.sub
   }
 }
 
 interface DataFlowContextState {
-  removeSource: (h: NodeHandle) => void
-  getSource: (h: NodeHandle) => DataSource
+  removeChannel: (id: string) => void
+  getChannel: (id: string) => DataSource
 }
 
 export const DataFlowContext = React.createContext<DataFlowContextState>(null!)
 
 export default function DataFlowProvider({ children }: { children: React.ReactNode }) {
-  const channelMap = useRef(new Map<string, DataSource>())
+  const channels = useRef(new Map<string, DataSource>())
 
-  function getDataSourceKey(handle: NodeHandle) {
-    return `${handle.nodeId}:${handle.handleId}`
-  }
-
-  const removeSource = useCallback(
-    (h: NodeHandle) => {
-      const key = getDataSourceKey(h)
-      channelMap.current.get(key)?.dispose()
-      channelMap.current.delete(key)
+  const removeChannel = useCallback(
+    (id: string) => {
+      channels.current.get(id)?.dispose()
+      channels.current.delete(id)
     },
-    [channelMap],
+    [channels],
   )
 
-  const getSource = useCallback((h: NodeHandle) => {
-    const key = getDataSourceKey(h)
-    let dataSource = channelMap.current.get(key)
+  const getChannel = useCallback((id: string) => {
+    let dataSource = channels.current.get(id)
     if (!dataSource) {
-      dataSource = new DataSource(key)
-      channelMap.current.set(key, dataSource)
+      dataSource = new DataSource(id)
+      channels.current.set(id, dataSource)
     }
     return dataSource
   }, [])
 
-  const value = useMemo(() => ({ removeSource, getSource }), [removeSource, getSource])
+  const value = useMemo(() => ({ removeChannel, getChannel }), [removeChannel, getChannel])
 
   return <DataFlowContext.Provider value={value}>{children}</DataFlowContext.Provider>
 }

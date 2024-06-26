@@ -4,10 +4,10 @@ import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigge
 import { Tooltip, TooltipContent, TooltipTrigger } from "@/components/ui/tooltip"
 import { Portal, register } from "@antv/x6-react-shape"
 import { ArrowsInSimple, Plus } from "@phosphor-icons/react"
+import { isEqual } from "lodash-es"
 import GraphContextProvider from "./graph-context"
 import { getShapes } from "./shape"
 import useDiagram from "./use-diagram"
-import { isEqual } from "lodash-es"
 
 getShapes().forEach(register)
 

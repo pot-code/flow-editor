@@ -2,6 +2,7 @@ import { getFlow, updateFlow } from "@/api/flow"
 import { Button } from "@/components/ui/button"
 import Loading from "@/components/ui/loading"
 import { DEFAULT_FLOW_NAME } from "@/features/flow/constants"
+import DataFlowProvider from "@/features/flow/editor/data-flow-context"
 import FlowGraph, { FlowGraphRef } from "@/features/flow/editor/flow-graph"
 import NameInput from "@/features/flow/editor/name-input"
 import { extractErrorMessage } from "@/lib/http"
@@ -74,7 +75,9 @@ function FlowEditor() {
         </div>
       </nav>
       <div className="flex-grow flex">
-        <FlowGraph ref={graphRef} data={data} />
+        <DataFlowProvider>
+          <FlowGraph ref={graphRef} data={data} />
+        </DataFlowProvider>
       </div>
       <Loading title="保存中" loading={updateFlowMutation.isPending} />
       <Loading title="载入中" loading={isLoading} />

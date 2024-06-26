@@ -1,15 +1,29 @@
-import { Badge } from "@/components/ui/badge"
-import { Separator } from "@/components/ui/separator"
 import type { ReactShapeConfig } from "@antv/x6-react-shape"
 import { Plus, Trash } from "@phosphor-icons/react"
-import { ActionButton, NodeActions, NodeContainer, NodeContent, NodeHeader } from "./layout"
+import { ActionButton, NodeActions, NodeContainer, NodeHeader } from "./layout"
 import { NodeProps } from "./typings"
+import { useDataFlowContext } from "../use-data-flow-context"
+import { combineLatest } from "rxjs"
+import { defaultTo, sum } from "lodash-es"
 
 // eslint-disable-next-line react-refresh/only-export-components
 function Add({ node }: NodeProps) {
+  const { getChannel } = useDataFlowContext()
+  const inputs = useMemo(() => node.getPortsByGroup("input").map((port) => getChannel(port.id!)), [getChannel, node])
+  const outputs = useMemo(() => node.getPortsByGroup("output").map((port) => getChannel(port.id!)), [getChannel, node])
+
   function onDelete() {
     node.remove()
   }
+
+  useEffect(() => {
+    const sub = combineLatest(inputs.map((s) => s.source)).subscribe((v) => {
+      outputs.forEach((s) => {
+        s.publish(sum(v.map((v) => defaultTo(v, 0))))
+      })
+    })
+    return () => sub.unsubscribe()
+  }, [inputs, outputs])
 
   return (
     <NodeContainer>
@@ -24,19 +38,6 @@ function Add({ node }: NodeProps) {
           <span>加法</span>
         </div>
       </NodeHeader>
-      <Separator />
-      <NodeContent className="flex flex-col gap-2">
-        <div className="relative">
-          <div className="px-4">
-            <Badge variant="default">Input: 空数据</Badge>
-          </div>
-        </div>
-        <div className="relative">
-          <div className="px-4">
-            <Badge variant="default">Input: 空数据</Badge>
-          </div>
-        </div>
-      </NodeContent>
     </NodeContainer>
   )
 }
@@ -75,19 +76,16 @@ export default {
       {
         group: "output",
         args: {
-          dy: 45,
+          dy: 18,
         },
       },
       {
         group: "input",
-        args: {
-          dy: 60,
-        },
       },
       {
         group: "input",
         args: {
-          dy: 90,
+          dy: 36,
         },
       },
     ],

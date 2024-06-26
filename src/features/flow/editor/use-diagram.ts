@@ -1,6 +1,8 @@
 import { Edge, Graph, Node } from "@antv/x6"
+import { useDataFlowContext } from "./use-data-flow-context"
 
 export default function useDiagram() {
+  const { getChannel } = useDataFlowContext()
   const containerRef = useRef<HTMLDivElement>(null!)
   const graphRef = useRef<Graph>(null!)
 
@@ -21,9 +23,13 @@ export default function useDiagram() {
         allowLoop: false,
         allowNode: false,
         allowEdge: false,
+        allowMulti: false,
         highlight: true,
         snap: {
           radius: 20,
+        },
+        validateMagnet({ magnet }) {
+          return magnet.getAttribute("port-group") === "output"
         },
         validateConnection({ targetPort, targetCell }) {
           if (!targetCell || !targetPort) return false
@@ -41,6 +47,17 @@ export default function useDiagram() {
       },
     })
 
+    graph.on("edge:connected", ({ edge }) => {
+      const source = edge.source as Edge.TerminalCellLooseData
+      const target = edge.target as Edge.TerminalCellLooseData
+
+      if (!source || !target || !source.port || !target.port) return
+
+      const sc = getChannel(source.port)
+      const tc = getChannel(target.port)
+      sc.connect(tc)
+    })
+
     graph.on("edge:dblclick", ({ edge }) => {
       graph.removeEdge(edge)
     })
@@ -50,7 +67,7 @@ export default function useDiagram() {
     return () => {
       graph.dispose()
     }
-  }, [])
+  }, [getChannel])
 
   function render(data: string) {
     const graph = graphRef.current
