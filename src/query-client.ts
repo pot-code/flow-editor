@@ -3,7 +3,7 @@ import axios from "axios"
 import { toast } from "sonner"
 
 function retry(failureCount: number, error: Error) {
-  if (axios.isAxiosError(error) && error.response && error.response.status === 401) {
+  if (axios.isAxiosError(error) && error.response && [401, 403, 500, 404, 400].includes(error.response.status)) {
     return false
   }
   return failureCount < 3
