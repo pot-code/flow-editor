@@ -6,6 +6,20 @@ export default function useDiagram() {
   const containerRef = useRef<HTMLDivElement>(null!)
   const graphRef = useRef<Graph>(null!)
 
+  const connectPort = useCallback(
+    (edge: Edge) => {
+      const source = edge.source as Edge.TerminalCellLooseData
+      const target = edge.target as Edge.TerminalCellLooseData
+
+      if (!source || !target || !source.port || !target.port) return
+
+      const sc = getChannel(source.port)
+      const tc = getChannel(target.port)
+      sc.connect(tc)
+    },
+    [getChannel],
+  )
+
   useEffect(() => {
     const graph = new Graph({
       container: containerRef.current,
@@ -48,14 +62,7 @@ export default function useDiagram() {
     })
 
     graph.on("edge:connected", ({ edge }) => {
-      const source = edge.source as Edge.TerminalCellLooseData
-      const target = edge.target as Edge.TerminalCellLooseData
-
-      if (!source || !target || !source.port || !target.port) return
-
-      const sc = getChannel(source.port)
-      const tc = getChannel(target.port)
-      sc.connect(tc)
+      connectPort(edge)
     })
 
     graph.on("edge:dblclick", ({ edge }) => {
@@ -67,11 +74,12 @@ export default function useDiagram() {
     return () => {
       graph.dispose()
     }
-  }, [getChannel])
+  }, [getChannel, connectPort])
 
   function render(data: string) {
     const graph = graphRef.current
     graph.fromJSON(JSON.parse(data))
+    graph.getEdges().forEach(connectPort)
   }
 
   function centerView() {
