@@ -3,7 +3,7 @@ import { BehaviorSubject, Unsubscribable } from "rxjs"
 
 class DataSource {
   private sub = new BehaviorSubject<any>(undefined)
-  private subscriptions = new Map<string, Unsubscribable>()
+  private connections = new Map<string, Unsubscribable>()
 
   constructor(readonly key: string) {}
 
@@ -16,22 +16,22 @@ class DataSource {
    * @param ds target DataSource
    */
   connect(ds: DataSource) {
-    this.subscribe(ds.key, ds.publish.bind(ds))
-  }
-
-  subscribe(key: string, cb: (data: any) => void) {
-    if (!this.subscriptions.has(key)) {
-      this.subscriptions.set(key, this.sub.subscribe(cb))
+    if (!this.connections.has(ds.key)) {
+      this.connections.set(ds.key, this.sub.subscribe(ds.publish.bind(ds)))
     }
   }
 
-  unsubscribe(key: string) {
-    this.subscriptions.get(key)?.unsubscribe()
-    this.subscriptions.delete(key)
+  subscribe(cb: (data: any) => void) {
+    return this.sub.subscribe(cb)
+  }
+
+  disconnect(id: string) {
+    this.connections.get(id)?.unsubscribe()
+    this.connections.delete(id)
   }
 
   dispose() {
-    this.subscriptions.forEach((sub) => sub.unsubscribe())
+    this.connections.forEach((sub) => sub.unsubscribe())
   }
 
   get source() {

@@ -18,13 +18,11 @@ function Result({ node }: NodeProps) {
   }
 
   useEffect(() => {
-    const sub = inputs
-      .map((v) => v.source)
-      .map((s) =>
-        s.subscribe((v) => {
-          setValue(defaultTo(v, 0))
-        }),
-      )
+    const sub = inputs.map((s) =>
+      s.subscribe((v) => {
+        setValue(defaultTo(v, 0))
+      }),
+    )
     return () => sub.forEach((s) => s.unsubscribe())
   }, [inputs])
 
