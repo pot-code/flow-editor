@@ -7,6 +7,7 @@ import { ArrowsInSimple, Plus } from "@phosphor-icons/react"
 import GraphContextProvider from "./graph-context"
 import { getShapes } from "./shape"
 import useDiagram from "./use-diagram"
+import { isEqual } from "lodash-es"
 
 getShapes().forEach(register)
 
@@ -20,57 +21,60 @@ export type FlowGraphRef = {
   getFlowData: () => string
 }
 
-const FlowGraph = forwardRef<FlowGraphRef, FlowGraphProps>(({ data }, ref) => {
-  const { containerRef, graphRef, exportGraph, render, centerView, addNode } = useDiagram()
+const FlowGraph = memo(
+  forwardRef<FlowGraphRef, FlowGraphProps>(({ data }, ref) => {
+    const { containerRef, graphRef, exportGraph, render, centerView, addNode } = useDiagram()
 
-  const getFlowData = useCallback(() => {
-    return JSON.stringify(exportGraph())
-  }, [exportGraph])
+    const getFlowData = useCallback(() => {
+      return JSON.stringify(exportGraph())
+    }, [exportGraph])
 
-  useImperativeHandle(ref, () => ({ getFlowData }), [getFlowData])
+    useImperativeHandle(ref, () => ({ getFlowData }), [getFlowData])
 
-  useEffect(() => {
-    if (data && data.data) {
-      render(data.data)
-      centerView()
-    }
-  }, [centerView, data, render])
+    useEffect(() => {
+      if (data && data.data) {
+        render(data.data)
+        centerView()
+      }
+    }, [centerView, data, render])
 
-  return (
-    <div className="h-full w-full relative">
-      <GraphContextProvider graph={graphRef.current}>
-        <PortalProvider />
-      </GraphContextProvider>
-      <div className="h-full w-full" ref={containerRef} />
-      <div className="absolute top-4 left-4">
-        <DropdownMenu>
-          <DropdownMenuTrigger asChild>
-            <Button size="icon" color="primary">
-              <Plus />
-            </Button>
-          </DropdownMenuTrigger>
-          <DropdownMenuContent side="right" align="start">
-            <DropdownMenuItem onSelect={() => addNode({ shape: "number" })}>数值</DropdownMenuItem>
-            <DropdownMenuItem onSelect={() => addNode({ shape: "add" })}>加法</DropdownMenuItem>
-            <DropdownMenuItem onSelect={() => addNode({ shape: "multiply" })}>乘法</DropdownMenuItem>
-            <DropdownMenuItem onSelect={() => addNode({ shape: "result" })}>结果</DropdownMenuItem>
-          </DropdownMenuContent>
-        </DropdownMenu>
-      </div>
-      <div className="absolute left-4 bottom-4 bg-white shadow-md border rounded-lg">
-        <div className="flex flex-col">
-          <Tooltip>
-            <TooltipTrigger asChild>
-              <button className="p-1" onClick={centerView}>
-                <ArrowsInSimple weight="fill" />
-              </button>
-            </TooltipTrigger>
-            <TooltipContent side="right">画布居中</TooltipContent>
-          </Tooltip>
+    return (
+      <div className="h-full w-full relative">
+        <GraphContextProvider graph={graphRef.current}>
+          <PortalProvider />
+        </GraphContextProvider>
+        <div className="h-full w-full" ref={containerRef} />
+        <div className="absolute top-4 left-4">
+          <DropdownMenu>
+            <DropdownMenuTrigger asChild>
+              <Button size="icon" color="primary">
+                <Plus />
+              </Button>
+            </DropdownMenuTrigger>
+            <DropdownMenuContent side="right" align="start">
+              <DropdownMenuItem onSelect={() => addNode({ shape: "number" })}>数值</DropdownMenuItem>
+              <DropdownMenuItem onSelect={() => addNode({ shape: "add" })}>加法</DropdownMenuItem>
+              <DropdownMenuItem onSelect={() => addNode({ shape: "multiply" })}>乘法</DropdownMenuItem>
+              <DropdownMenuItem onSelect={() => addNode({ shape: "result" })}>结果</DropdownMenuItem>
+            </DropdownMenuContent>
+          </DropdownMenu>
+        </div>
+        <div className="absolute left-4 bottom-4 bg-white shadow-md border rounded-lg">
+          <div className="flex flex-col">
+            <Tooltip>
+              <TooltipTrigger asChild>
+                <button className="p-1" onClick={centerView}>
+                  <ArrowsInSimple weight="fill" />
+                </button>
+              </TooltipTrigger>
+              <TooltipContent side="right">画布居中</TooltipContent>
+            </Tooltip>
+          </div>
         </div>
       </div>
-    </div>
-  )
-})
+    )
+  }),
+  isEqual,
+)
 
 export default FlowGraph
