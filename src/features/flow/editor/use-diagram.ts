@@ -65,6 +65,16 @@ export default function useDiagram() {
       connectPort(edge)
     })
 
+    graph.on("edge:removed", ({ edge }) => {
+      const source = edge.source as Edge.TerminalCellLooseData
+      const target = edge.target as Edge.TerminalCellLooseData
+
+      if (!source || !target || !source.port || !target.port) return
+
+      const sc = getChannel(source.port)
+      sc.disconnect(target.port!)
+    })
+
     graph.on("edge:dblclick", ({ edge }) => {
       graph.removeEdge(edge)
     })

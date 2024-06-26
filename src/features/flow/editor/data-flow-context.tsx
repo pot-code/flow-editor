@@ -5,7 +5,7 @@ class DataSource {
   private sub = new BehaviorSubject<any>(undefined)
   private connections = new Map<string, Unsubscribable>()
 
-  constructor(readonly key: string) {}
+  constructor(readonly id: string) {}
 
   publish(data: any) {
     this.sub.next(data)
@@ -16,8 +16,8 @@ class DataSource {
    * @param ds target DataSource
    */
   connect(ds: DataSource) {
-    if (!this.connections.has(ds.key)) {
-      this.connections.set(ds.key, this.sub.subscribe(ds.publish.bind(ds)))
+    if (!this.connections.has(ds.id)) {
+      this.connections.set(ds.id, this.sub.subscribe(ds.publish.bind(ds)))
     }
   }
 
