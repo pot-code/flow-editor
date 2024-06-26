@@ -1,4 +1,4 @@
-import { Graph } from "@antv/x6"
+import { Edge, Graph, Node } from "@antv/x6"
 
 export default function useDiagram() {
   const containerRef = useRef<HTMLDivElement>(null!)
@@ -25,17 +25,27 @@ export default function useDiagram() {
         snap: {
           radius: 20,
         },
-        validateConnection: ({ targetMagnet }) => {
-          return targetMagnet?.getAttribute("port-group") !== "output"
+        validateConnection({ targetPort, targetCell }) {
+          if (!targetCell || !targetPort) return false
+          if (!targetCell.isNode()) return false
+
+          const targetNode = targetCell as Node
+          const tp = targetNode.getPort(targetPort)
+
+          if (!tp) return false
+          if (tp.group === "output") return false
+
+          const edges = this.getConnectedEdges(targetCell.id)
+          return !edges.some((e) => (e.target as Edge.TerminalCellLooseData).port === targetPort)
         },
       },
     })
 
-    graphRef.current = graph
-
     graph.on("edge:dblclick", ({ edge }) => {
       graph.removeEdge(edge)
     })
+
+    graphRef.current = graph
 
     return () => {
       graph.dispose()

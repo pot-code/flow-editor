@@ -33,8 +33,31 @@ function Result({ node }: NodeProps) {
 }
 
 export default {
+  component: Result,
   shape: "result",
   width: 200,
   effect: ["data"],
-  component: Result,
+  ports: {
+    groups: {
+      input: {
+        position: "left",
+        attrs: {
+          circle: {
+            magnet: true,
+            fill: "#000",
+            stroke: "none",
+            r: 5,
+          },
+        },
+      },
+    },
+    items: [
+      {
+        group: "input",
+        args: {
+          dy: 45,
+        },
+      },
+    ],
+  },
 } as ReactShapeConfig
