@@ -57,6 +57,7 @@ export default function useDiagram() {
           return this.createEdge({
             attrs: {
               line: {
+                targetMarker: "block",
                 stroke: "#ADADAD",
                 strokeWidth: 1,
               },

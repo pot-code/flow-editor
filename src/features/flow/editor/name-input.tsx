@@ -1,42 +1,21 @@
-export interface NameInputProps {
-  value: string
-  onChange?: (value: string) => void
-}
+type NameInputProps = React.ComponentPropsWithRef<"input">
 
-const NameInput = memo<NameInputProps>(({ value, onChange }) => {
-  const domRef = useRef<HTMLDivElement>(null!)
-
-  const onKeyDown = useCallback((e: React.KeyboardEvent<HTMLInputElement>) => {
-    if (e.key === "Enter") {
-      e.currentTarget.blur()
-    }
-  }, [])
-
-  const onBlur = useCallback(
-    (e: React.FocusEvent<HTMLDivElement>) => {
-      onChange?.(e.currentTarget.textContent as string)
-    },
-    [onChange],
-  )
+const NameInput = memo<NameInputProps>((props) => {
+  const inputRef = useRef<HTMLInputElement>(null!)
+  const placeholderRef = useRef<HTMLSpanElement>(null!)
 
   useEffect(() => {
-    domRef.current.textContent = value
-  }, [value])
+    placeholderRef.current.textContent = props.value as string
+  }, [props.value])
 
-  // why nest div in div?
-  // https://stackoverflow.com/questions/34354085/clicking-outside-a-contenteditable-div-stills-give-focus-to-it
   return (
-    <div>
-      <div
-        contentEditable
-        suppressContentEditableWarning
-        className="outline-none whitespace-pre text-neutral-300 focus:text-foreground"
-        ref={domRef}
-        onKeyDown={onKeyDown}
-        onBlur={onBlur}
-      >
-        {value}
-      </div>
+    <div className="relative min-w-12 h-4">
+      <span ref={placeholderRef} className="invisible" />
+      <input
+        ref={inputRef}
+        className="absolute left-0 w-full outline-none text-neutral-500 focus:text-neutral-900"
+        {...props}
+      />
     </div>
   )
 })

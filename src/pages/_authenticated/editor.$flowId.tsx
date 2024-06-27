@@ -50,9 +50,13 @@ function FlowEditor() {
     })
   }
 
-  function onChangeGraphName(name: string) {
-    if (isEmpty(name)) setTitle(DEFAULT_FLOW_NAME)
-    else setTitle(name)
+  function onChangeTitle(e: React.ChangeEvent<HTMLInputElement>) {
+    setTitle(e.target.value)
+  }
+
+  function onTitleInputBlur(e: React.FocusEvent<HTMLInputElement>) {
+    const value = e.target.value
+    if (isEmpty(value)) setTitle(DEFAULT_FLOW_NAME)
   }
 
   useEffect(() => {
@@ -67,7 +71,7 @@ function FlowEditor() {
         <Button variant="ghost" size="icon" onClick={() => navigate({ to: "/" })}>
           <ArrowLeft />
         </Button>
-        <NameInput value={title} onChange={onChangeGraphName} />
+        <NameInput value={title} onChange={onChangeTitle} onBlur={onTitleInputBlur} />
         <div>
           <Button size="sm" variant="ghost" onClick={onSave}>
             保存
