@@ -25,6 +25,17 @@ export default function useDiagram() {
       container: containerRef.current,
       panning: true,
       mousewheel: true,
+      highlighting: {
+        magnetAdsorbed: {
+          name: "stroke",
+          args: {
+            attrs: {
+              stroke: "#9BEC00",
+              "stroke-width": 4,
+            },
+          },
+        },
+      },
       background: {
         color: "#fff",
       },
