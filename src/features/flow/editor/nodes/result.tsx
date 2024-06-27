@@ -3,19 +3,16 @@ import { Separator } from "@/components/ui/separator"
 import { ReactShapeConfig } from "@antv/x6-react-shape"
 import { Equals, Trash } from "@phosphor-icons/react"
 import { defaultTo } from "lodash-es"
-import { useDataFlowContext } from "../use-data-flow-context"
+import usePorts from "./hooks/use-ports"
 import { ActionButton, NodeActions, NodeContainer, NodeContent, NodeHeader } from "./layout"
 import { NodeProps } from "./typings"
+import useNode from "./hooks/use-node"
 
 // eslint-disable-next-line react-refresh/only-export-components
 function Result({ node }: NodeProps) {
-  const { getChannel } = useDataFlowContext()
   const [value, setValue] = useState(0)
-  const inputs = useMemo(() => node.getPortsByGroup("input").map((port) => getChannel(port.id!)), [getChannel, node])
-
-  function onDelete() {
-    node.remove()
-  }
+  const { inputs } = usePorts(node)
+  const { remove } = useNode(node)
 
   useEffect(() => {
     const sub = inputs.map((s) =>
@@ -29,7 +26,7 @@ function Result({ node }: NodeProps) {
   return (
     <NodeContainer>
       <NodeActions>
-        <ActionButton className="bg-destructive" onClick={onDelete}>
+        <ActionButton className="bg-destructive" onClick={remove}>
           <Trash size={14} className="text-destructive-foreground" />
         </ActionButton>
       </NodeActions>

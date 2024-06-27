@@ -2,29 +2,26 @@ import { Input } from "@/components/ui/input"
 import { Separator } from "@/components/ui/separator"
 import { ReactShapeConfig } from "@antv/x6-react-shape"
 import { Hash, Trash } from "@phosphor-icons/react"
+import usePorts from "./hooks/use-ports"
 import { ActionButton, NodeActions, NodeContainer, NodeContent, NodeHeader } from "./layout"
 import { NodeProps } from "./typings"
-import { useDataFlowContext } from "../use-data-flow-context"
+import useNode from "./hooks/use-node"
 
 // eslint-disable-next-line react-refresh/only-export-components
 function NumberInput({ node }: NodeProps) {
-  const { getChannel } = useDataFlowContext()
   const [value, setValue] = useState(0)
-  const outputs = useMemo(() => node.getPortsByGroup("output").map((port) => getChannel(port.id!)), [getChannel, node])
+  const { outputs } = usePorts(node)
+  const { remove } = useNode(node)
 
   function onChange(e: React.ChangeEvent<HTMLInputElement>) {
     setValue(Number(e.target.value))
     outputs.forEach((output) => output.publish(Number(e.target.value)))
   }
 
-  function onDelete() {
-    node.remove()
-  }
-
   return (
     <NodeContainer>
       <NodeActions>
-        <ActionButton className="bg-destructive" onClick={onDelete}>
+        <ActionButton className="bg-destructive" onClick={remove}>
           <Trash size={14} className="text-destructive-foreground" />
         </ActionButton>
       </NodeActions>

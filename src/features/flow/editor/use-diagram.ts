@@ -2,19 +2,19 @@ import { Edge, Graph, Node } from "@antv/x6"
 import { useDataFlowContext } from "./use-data-flow-context"
 
 export default function useDiagram() {
-  const { getChannel } = useDataFlowContext()
+  const { getChannel, removeChannel } = useDataFlowContext()
   const containerRef = useRef<HTMLDivElement>(null!)
   const graphRef = useRef<Graph>(null!)
 
   const connectPort = useCallback(
     (edge: Edge) => {
-      const source = edge.source as Edge.TerminalCellLooseData
-      const target = edge.target as Edge.TerminalCellLooseData
+      const sp = edge.getSourcePortId()
+      const tp = edge.getTargetPortId()
 
-      if (!source || !target || !source.port || !target.port) return
+      if (!sp || !tp) return
 
-      const sc = getChannel(source.port)
-      const tc = getChannel(target.port)
+      const sc = getChannel(sp)
+      const tc = getChannel(tp)
       sc.connect(tc)
     },
     [getChannel],
@@ -66,13 +66,17 @@ export default function useDiagram() {
     })
 
     graph.on("edge:removed", ({ edge }) => {
-      const source = edge.source as Edge.TerminalCellLooseData
-      const target = edge.target as Edge.TerminalCellLooseData
+      const sp = edge.getSourcePortId()
+      const tp = edge.getTargetPortId()
 
-      if (!source || !target || !source.port || !target.port) return
+      if (!sp || !tp) return
 
-      const sc = getChannel(source.port)
-      sc.disconnect(target.port!)
+      const sc = getChannel(sp)
+      sc.disconnect(tp)
+    })
+
+    graph.on("node:removed", ({ node }) => {
+      node.getPorts().forEach((port) => removeChannel(port.id!))
     })
 
     graph.on("edge:dblclick", ({ edge }) => {
@@ -84,7 +88,7 @@ export default function useDiagram() {
     return () => {
       graph.dispose()
     }
-  }, [getChannel, connectPort])
+  }, [getChannel, connectPort, removeChannel])
 
   function render(data: string) {
     const graph = graphRef.current

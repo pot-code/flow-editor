@@ -2,19 +2,15 @@ import { ReactShapeConfig } from "@antv/x6-react-shape"
 import { Trash, X } from "@phosphor-icons/react"
 import { defaultTo, multiply, reduce } from "lodash-es"
 import { combineLatest, map } from "rxjs"
-import { useDataFlowContext } from "../use-data-flow-context"
+import usePorts from "./hooks/use-ports"
 import { ActionButton, NodeActions, NodeContainer, NodeHeader } from "./layout"
 import { NodeProps } from "./typings"
+import useNode from "./hooks/use-node"
 
 // eslint-disable-next-line react-refresh/only-export-components
 function Multiply({ node }: NodeProps) {
-  const { getChannel } = useDataFlowContext()
-  const inputs = useMemo(() => node.getPortsByGroup("input").map((port) => getChannel(port.id!)), [getChannel, node])
-  const outputs = useMemo(() => node.getPortsByGroup("output").map((port) => getChannel(port.id!)), [getChannel, node])
-
-  function onDelete() {
-    node.remove()
-  }
+  const { inputs, outputs } = usePorts(node)
+  const { remove } = useNode(node)
 
   useEffect(() => {
     const sub = combineLatest(inputs.map((s) => s.source))
@@ -37,7 +33,7 @@ function Multiply({ node }: NodeProps) {
   return (
     <NodeContainer>
       <NodeActions>
-        <ActionButton className="bg-destructive" onClick={onDelete}>
+        <ActionButton className="bg-destructive" onClick={remove}>
           <Trash size={14} className="text-destructive-foreground" />
         </ActionButton>
       </NodeActions>
