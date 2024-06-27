@@ -42,6 +42,16 @@ export default function useDiagram() {
         snap: {
           radius: 20,
         },
+        createEdge() {
+          return this.createEdge({
+            attrs: {
+              line: {
+                stroke: "#ADADAD",
+                strokeWidth: 1,
+              },
+            },
+          })
+        },
         validateMagnet({ magnet }) {
           return magnet.getAttribute("port-group") === "output"
         },
