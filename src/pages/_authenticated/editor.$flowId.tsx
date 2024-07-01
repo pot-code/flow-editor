@@ -78,7 +78,7 @@ function FlowEditor() {
           </Button>
         </div>
       </nav>
-      <div className="flex-grow flex">
+      <div className="flex-grow flex min-h-0">
         <DataFlowProvider>
           <FlowGraph ref={graphRef} data={data} />
         </DataFlowProvider>

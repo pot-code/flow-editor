@@ -23,6 +23,7 @@ export default function useDiagram() {
   useEffect(() => {
     const graph = new Graph({
       container: graphContainerRef.current,
+      autoResize: true,
       panning: true,
       mousewheel: true,
       highlighting: {

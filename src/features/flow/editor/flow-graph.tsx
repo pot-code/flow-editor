@@ -49,7 +49,7 @@ const FlowGraph = memo(
           <DropdownMenu>
             <DropdownMenuTrigger asChild>
               <Button size="icon" color="primary">
-                <Plus />
+                <Plus weight="bold" />
               </Button>
             </DropdownMenuTrigger>
             <DropdownMenuContent side="right" align="start">
@@ -60,7 +60,7 @@ const FlowGraph = memo(
             </DropdownMenuContent>
           </DropdownMenu>
         </div>
-        <div className="absolute left-4 bottom-4 bg-white shadow-md border rounded-lg">
+        <div className="absolute left-4 bottom-4 bg-white shadow border border-neutral-100">
           <div className="flex flex-col">
             <Tooltip>
               <TooltipTrigger asChild>

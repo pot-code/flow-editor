@@ -24,7 +24,7 @@ function NodeContainer({ className, onMouseDown, ...props }: NodeContainerProps)
       <div
         ref={ref}
         className={cn(
-          "border border-neutral-200 rounded relative bg-card text-card-foreground shadow",
+          "border rounded relative bg-card text-card-foreground shadow",
           {
             "ring-1 ring-primary": focus,
           },
