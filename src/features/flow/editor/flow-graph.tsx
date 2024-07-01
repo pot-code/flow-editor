@@ -3,11 +3,12 @@ import { Button } from "@/components/ui/button"
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from "@/components/ui/dropdown-menu"
 import { Tooltip, TooltipContent, TooltipTrigger } from "@/components/ui/tooltip"
 import { Portal, register } from "@antv/x6-react-shape"
-import { ArrowsInSimple, Plus } from "@phosphor-icons/react"
+import { ArrowsInSimple, Minus, Plus } from "@phosphor-icons/react"
 import { isEqual } from "lodash-es"
 import GraphContextProvider from "./graph-context"
 import { getShapes } from "./shape"
 import useDiagram from "./use-diagram"
+import { Separator } from "@/components/ui/separator"
 
 getShapes().forEach(register)
 
@@ -23,13 +24,11 @@ export type FlowGraphRef = {
 
 const FlowGraph = memo(
   forwardRef<FlowGraphRef, FlowGraphProps>(({ data }, ref) => {
-    const { containerRef, graphRef, exportGraph, render, centerView, addNode } = useDiagram()
+    const { graphContainerRef, graphRef, render, centerView, addNode, zoomIn, zoomOut, exportGraph } = useDiagram()
 
     const getFlowData = useCallback(() => {
       return JSON.stringify(exportGraph())
     }, [exportGraph])
-
-    useImperativeHandle(ref, () => ({ getFlowData }), [getFlowData])
 
     useEffect(() => {
       if (data && data.data) {
@@ -38,12 +37,14 @@ const FlowGraph = memo(
       }
     }, [centerView, data, render])
 
+    useImperativeHandle(ref, () => ({ getFlowData }), [getFlowData])
+
     return (
       <div className="h-full w-full relative">
         <GraphContextProvider graph={graphRef.current}>
           <PortalProvider />
         </GraphContextProvider>
-        <div className="h-full w-full" ref={containerRef} />
+        <div className="h-full w-full" ref={graphContainerRef} />
         <div className="absolute top-4 left-4">
           <DropdownMenu>
             <DropdownMenuTrigger asChild>
@@ -63,11 +64,29 @@ const FlowGraph = memo(
           <div className="flex flex-col">
             <Tooltip>
               <TooltipTrigger asChild>
-                <button className="p-1" onClick={centerView}>
-                  <ArrowsInSimple weight="fill" />
+                <button className="p-1 hover:bg-neutral-100" onClick={centerView}>
+                  <ArrowsInSimple />
                 </button>
               </TooltipTrigger>
               <TooltipContent side="right">画布居中</TooltipContent>
+            </Tooltip>
+            <Separator />
+            <Tooltip>
+              <TooltipTrigger asChild>
+                <button className="p-1 hover:bg-neutral-100" onClick={zoomIn}>
+                  <Plus />
+                </button>
+              </TooltipTrigger>
+              <TooltipContent side="right">画布放大</TooltipContent>
+            </Tooltip>
+            <Separator />
+            <Tooltip>
+              <TooltipTrigger asChild>
+                <button className="p-1 hover:bg-neutral-100" onClick={zoomOut}>
+                  <Minus />
+                </button>
+              </TooltipTrigger>
+              <TooltipContent side="right">画布缩小</TooltipContent>
             </Tooltip>
           </div>
         </div>

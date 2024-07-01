@@ -3,7 +3,7 @@ import { useDataFlowContext } from "./use-data-flow-context"
 
 export default function useDiagram() {
   const { getChannel, removeChannel } = useDataFlowContext()
-  const containerRef = useRef<HTMLDivElement>(null!)
+  const graphContainerRef = useRef<HTMLDivElement>(null!)
   const graphRef = useRef<Graph>(null!)
 
   const connectPort = useCallback(
@@ -22,7 +22,7 @@ export default function useDiagram() {
 
   useEffect(() => {
     const graph = new Graph({
-      container: containerRef.current,
+      container: graphContainerRef.current,
       panning: true,
       mousewheel: true,
       highlighting: {
@@ -132,5 +132,19 @@ export default function useDiagram() {
     graph.addNode(node)
   }
 
-  return { containerRef, graphRef, render, centerView, exportGraph, addNode }
+  function zoomIn() {
+    const graph = graphRef.current
+    graph.zoom(0.1, {
+      maxScale: 2,
+    })
+  }
+
+  function zoomOut() {
+    const graph = graphRef.current
+    graph.zoom(-0.1, {
+      minScale: 0.5,
+    })
+  }
+
+  return { graphContainerRef, graphRef, render, centerView, exportGraph, addNode, zoomIn, zoomOut }
 }
