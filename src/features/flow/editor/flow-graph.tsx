@@ -1,14 +1,13 @@
 import { FlowDetailData } from "@/api/model"
 import { Button } from "@/components/ui/button"
-import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from "@/components/ui/dropdown-menu"
+import { Separator } from "@/components/ui/separator"
 import { Tooltip, TooltipContent, TooltipTrigger } from "@/components/ui/tooltip"
 import { Portal, register } from "@antv/x6-react-shape"
-import { ArrowsInSimple, Minus, Plus } from "@phosphor-icons/react"
+import { ArrowsInSimple, Equals, Hash, Minus, Plus, X } from "@phosphor-icons/react"
 import { isEqual } from "lodash-es"
 import GraphContextProvider from "./graph-context"
 import { getShapes } from "./shape"
 import useDiagram from "./use-diagram"
-import { Separator } from "@/components/ui/separator"
 
 getShapes().forEach(register)
 
@@ -24,6 +23,7 @@ export type FlowGraphRef = {
 
 const FlowGraph = memo(
   forwardRef<FlowGraphRef, FlowGraphProps>(({ data }, ref) => {
+    const rootRef = useRef<HTMLDivElement>(null!)
     const { graphContainerRef, graphRef, render, centerView, addNode, zoomIn, zoomOut, exportGraph } = useDiagram()
 
     const getFlowData = useCallback(() => {
@@ -40,25 +40,26 @@ const FlowGraph = memo(
     useImperativeHandle(ref, () => ({ getFlowData }), [getFlowData])
 
     return (
-      <div className="h-full w-full relative">
+      <div className="h-full w-full relative" ref={rootRef}>
         <GraphContextProvider graph={graphRef.current}>
           <PortalProvider />
         </GraphContextProvider>
         <div className="h-full w-full" ref={graphContainerRef} />
-        <div className="absolute top-4 left-4">
-          <DropdownMenu>
-            <DropdownMenuTrigger asChild>
-              <Button size="icon" color="primary">
-                <Plus weight="bold" />
-              </Button>
-            </DropdownMenuTrigger>
-            <DropdownMenuContent side="right" align="start">
-              <DropdownMenuItem onSelect={() => addNode({ shape: "number" })}>数值</DropdownMenuItem>
-              <DropdownMenuItem onSelect={() => addNode({ shape: "add" })}>加法</DropdownMenuItem>
-              <DropdownMenuItem onSelect={() => addNode({ shape: "multiply" })}>乘法</DropdownMenuItem>
-              <DropdownMenuItem onSelect={() => addNode({ shape: "result" })}>结果</DropdownMenuItem>
-            </DropdownMenuContent>
-          </DropdownMenu>
+        <div className="absolute top-4 left-1/2 -translate-x-1/2">
+          <div className="flex gap-1 p-1 rounded-full shadow bg-black text-white">
+            <Button className="rounded-full" variant="ghost" size="icon" onClick={() => addNode({ shape: "add" })}>
+              <Plus />
+            </Button>
+            <Button className="rounded-full" variant="ghost" size="icon" onClick={() => addNode({ shape: "multiply" })}>
+              <X />
+            </Button>
+            <Button className="rounded-full" variant="ghost" size="icon" onClick={() => addNode({ shape: "number" })}>
+              <Hash />
+            </Button>
+            <Button className="rounded-full" variant="ghost" size="icon" onClick={() => addNode({ shape: "result" })}>
+              <Equals />
+            </Button>
+          </div>
         </div>
         <div className="absolute left-4 bottom-4 bg-white shadow border border-neutral-100">
           <div className="flex flex-col">
